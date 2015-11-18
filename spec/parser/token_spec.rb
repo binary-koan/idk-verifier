@@ -39,3 +39,48 @@ describe Token do
     end
   end
 end
+
+describe Tokenizer do
+
+  def tokenize(input)
+    Tokenizer.new(input.chars.each).next
+  end
+
+  def expect_token(input, output)
+    token = tokenize(input)
+    expect(token).to eq output
+  end
+
+  context "tokenizing a string" do
+
+    it "reads an arbitrary string correctly" do
+      expect_token('"abcd"', Token.string('abcd'))
+    end
+
+    it "reads an empty string correctly" do
+      expect_token('""', Token.string(''))
+    end
+  end
+
+  context "tokenizing an integer" do
+
+    it "reads an arbitrary integer correctly" do
+      expect_token('1234', Token.integer(1234))
+    end
+  end
+
+  context "tokenizing a symbol" do
+
+    it "reads an add symbol" do
+      expect_token('+', Token.symbol('+'))
+    end
+
+    it "reads an addition assignment" do
+      expect_token('+=', Token.symbol('+='))
+    end
+
+    it "does not accept a symbol which doesn't support assignment" do
+      expect_token('!=', Token.symbol('!'))
+    end
+  end
+end
