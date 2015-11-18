@@ -6,13 +6,12 @@ module Verifier
     end
 
     def to_s
-      result = ""
       locals = @locals.dup
-      @statements.each do |stmt|
-        result += "# #{locals.join(" && ")}\n" unless locals.empty?
-        result += stmt + "\n"
+      result = @statements.map do |stmt|
+        known_truths = "# #{locals.join(" && ")}\n" unless locals.empty?
         locals = stmt.static_evaluate(locals)
-      end
+        "#{known_truths}#{stmt}\n"
+      end.join
       result += "# #{locals.join(" && ")}\n" unless locals.empty?
       result
     end

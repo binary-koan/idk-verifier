@@ -1,4 +1,4 @@
-require_relative "../../lib/verifier/scope"
+require "spec_helper"
 
 RSpec.describe Verifier::Scope do
   let(:statements) { [] }

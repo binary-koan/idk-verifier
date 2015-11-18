@@ -1,0 +1,5 @@
+require_relative "../lib/verifier/expression"
+require_relative "../lib/verifier/scope"
+require_relative "../lib/verifier/statement"
+require_relative "../lib/verifier/term"
+require_relative "../lib/verifier/variable"

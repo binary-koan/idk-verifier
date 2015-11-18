@@ -1,4 +1,4 @@
-require_relative "../../lib/verifier/term"
+require "spec_helper"
 
 RSpec.describe Verifier::ConstantTerm do
   describe "#value" do
