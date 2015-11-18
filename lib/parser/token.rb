@@ -41,3 +41,27 @@ class Token
     end
   end
 end
+
+class Tokenizer
+  def initialize(characters)
+    @characters = characters
+  end
+
+  def next
+    first_char = @characters.next
+
+    if first_char == '"'
+      next_string
+    end
+  end
+
+  private
+
+  def next_string
+    value = @characters.each.take_while { |a| a != '"' }
+
+    @characters.next # eat end quote
+
+    Token.string(value)
+  end
+end
