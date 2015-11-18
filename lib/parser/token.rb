@@ -11,6 +11,10 @@ class Token
     Token.new(:integer, value)
   end
 
+  def self.word(value)
+    Token.new(:word, value)
+  end
+
   def self.symbol(value)
     Token.new(:symbol, value)
   end
@@ -26,6 +30,10 @@ class Token
 
   def is_integer?
     @type == :integer
+  end
+
+  def is_word?
+    @type == :word
   end
 
   def is_symbol?
@@ -62,6 +70,8 @@ class Tokenizer
       next_string
     elsif first_char =~ /[0-9]/
       next_integer
+    elsif first_char =~ /[[:alpha:]]/
+      next_word
     else
       next_symbol
     end
@@ -80,6 +90,11 @@ class Tokenizer
     Token.integer(value)
   end
 
+  def next_word
+    value = take_until { |c| c !~ /([[:alpha:]]|[[:digit:]]|_)/ }
+    Token.word(value)
+  end
+
   def next_symbol
     first_char = @characters.next
 
@@ -92,19 +107,17 @@ class Tokenizer
     # Tokens with a single character
     when '!'
       Token.symbol(first_char)
-    else
-      nil
     end
   end
 
   # The next symbol may have an equals suffix (+=, etc)
   def next_symbol_maybe_assign(first_char)
-    if (@characters.peek rescue nil) == '='
+    Token.symbol(if (@characters.peek rescue nil) == '='
       expect_character('=')
-      Token.symbol("#{first_char}=")
+      "#{first_char}="
     else
-      Token.symbol(first_char)
-    end
+      first_char
+    end)
   end
 
   # Reads characters until the block returns true.

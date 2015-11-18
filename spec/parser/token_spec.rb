@@ -69,6 +69,12 @@ describe Tokenizer do
     end
   end
 
+  context "tokenizing a word" do
+    it "reads the 'assert' word correctly" do
+      expect_token('assert', Token.word('assert'))
+    end
+  end
+
   context "tokenizing a symbol" do
 
     it "reads an add symbol" do
