@@ -42,8 +42,12 @@ end
 
 describe Tokenizer do
 
+  def tokenizer(input)
+    Tokenizer.new(input.chars.each)
+  end
+
   def tokenize(input)
-    Tokenizer.new(input.chars.each).next
+    tokenizer(input).next
   end
 
   def expect_token(input, output)
@@ -87,6 +91,23 @@ describe Tokenizer do
 
     it "does not accept a symbol which doesn't support assignment" do
       expect_token('!=', Token.symbol('!'))
+    end
+  end
+
+  context "tokenizing a binary operator" do
+
+    # it "reads the things correctly" do
+    #   tokenizer = tokenizer("123+=abc")
+    #   expect(tokenizer.next).to eq 123
+    #   expect(tokenizer.next).to eq '+'
+    # end
+  end
+
+  describe "#peek" do
+    it "doesn't change the value of 'next'" do
+      tokenizer = tokenizer("abc def")
+      expect(tokenizer.next).to eq 'abc'
+      expect(tokenizer.peek).to eq 'def'
     end
   end
 end

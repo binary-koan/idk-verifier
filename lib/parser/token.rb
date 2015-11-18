@@ -50,10 +50,14 @@ class Token
   end
 
   def ==(other)
-    if self.nil? || other.nil?
-      false
+    if other.is_a?(Token)
+      if self.nil? || other.nil?
+        false
+      else
+        @type == other.type && @value == other.value
+      end
     else
-      @type == other.type && @value == other.value
+      @value == other
     end
   end
 end
@@ -64,6 +68,12 @@ class Tokenizer
   end
 
   def next
+    if @peek_buf
+      token = @peek_buf
+      @peek_buf = nil
+      return token
+    end
+
     first_char = @characters.peek
 
     if first_char == '"'
@@ -75,6 +85,12 @@ class Tokenizer
     else
       next_symbol
     end
+  end
+
+  def peek
+    token = self.next
+    @peek_buf = token
+    token
   end
 
   private
