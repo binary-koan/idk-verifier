@@ -3,14 +3,8 @@ module Verifier
     def static_evaluate(context)
     end
 
-    def possible_variable_values(context)
+    def variable_constraints(context)
       {}
-    end
-
-    def assign(context, values)
-      values.each do |name, value|
-        context[name] = value
-      end
     end
   end
 end

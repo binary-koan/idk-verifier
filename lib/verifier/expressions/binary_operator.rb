@@ -20,8 +20,8 @@ module Verifier
       @evaluation_strategy.static_evaluate(context)
     end
 
-    def possible_variable_values(context)
-      @evaluation_strategy.possible_variable_values(context)
+    def variable_constraints(context)
+      @evaluation_strategy.variable_constraints(context)
     end
 
     def to_s
@@ -62,16 +62,15 @@ module Verifier
       lhs.static_evaluate(context) && rhs.static_evaluate(context)
     end
 
-    def possible_variable_values(context)
-      lhs_values = lhs.possible_variable_values(context)
-      context.assign(lhs_values)
-      rhs_values = rhs.possible_variable_values(context)
-      context.assign(combine_values(lhs_values, rhs_values))
+    def variable_constraints(context)
+      lhs_constraints = lhs.variable_constraints(context)
+      rhs_constraints = rhs.variable_constraints(context.merge(lhs_constraints))
+      combined_constraints(lhs_constraints, rhs_constraints)
     end
 
     private
 
-    def combine_values(first_values, second_values)
+    def combined_constraints(first_values, second_values)
       first_values.merge(second_values) do |name, value1, value2|
         if value1 && value2
           value1.constrain(value2)
@@ -83,7 +82,7 @@ module Verifier
   end
 
   class ComparisonOperatorStrategy < BinaryOperatorStrategy
-    def possible_variable_values(context)
+    def variable_constraints(context)
       simple_variable_constraint(context) || {}
     end
 

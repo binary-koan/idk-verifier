@@ -8,11 +8,11 @@ module Verifier
     end
 
     def static_evaluate(context)
-      assign(context, possible_variable_values(context))
+      context.merge!(variable_constraints(context))
     end
 
-    def possible_variable_values(context)
-      @expression.possible_variable_values(context)
+    def variable_constraints(context)
+      @expression.variable_constraints(context)
     end
 
     def to_s

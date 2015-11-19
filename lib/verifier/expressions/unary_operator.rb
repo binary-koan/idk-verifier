@@ -11,10 +11,10 @@ module Verifier
       # ...
     end
 
-    def possible_variable_values(context)
-      values = @expression.possible_variable_values(context)
+    def variable_constraints(context)
+      values = @expression.variable_constraints(context)
       values.each { |name, value| values[name] = value.negate }
-      assign(context, values)
+      values
     end
 
     def to_s
