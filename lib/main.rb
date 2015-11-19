@@ -8,10 +8,10 @@ FILENAME = ARGV[0]
 
 puts "Opening '#{FILENAME}'"
 
-code = File.read(FILENAME)
-parser = Parser.new(code)
+scope = Parser.parse_file(FILENAME)
 
-loop do
-  expr = parser.parse_expression
-  puts "Expression: #{expr}"
+if scope.static_evaluate
+  puts "'#{FILENAME}' passed verification"
+else
+  puts "'#{FILENAME}' failed verification"
 end
