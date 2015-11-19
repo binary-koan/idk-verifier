@@ -34,7 +34,7 @@ RSpec.describe Verifier::BinaryOperatorExpression do
         let(:first_operand) { expr(:Constant, mock_range) }
 
         it "passes the signal #{operator} to the result of the first operand" do
-          expect(mock_range).to receive(operator)
+          expect(mock_range).to receive(operator).at_least(:once)
           expression.static_evaluate(context)
         end
       end

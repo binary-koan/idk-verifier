@@ -84,36 +84,32 @@ module Verifier
 
   class ComparisonOperatorStrategy < BinaryOperatorStrategy
     def possible_variable_values(context)
-      simple_variable_constraint || {}
+      simple_variable_constraint(context) || {}
     end
 
     private
 
-    def simple_variable_constraint
-      return unless lhs.is_a?(VariableExpression) &&
-        rhs.is_a?(ConstantExpression)
+    def simple_variable_constraint(context)
+      return unless lhs.is_a?(VariableExpression)
 
-      value = case operator
+      value = rhs.static_evaluate(context)
+      bounds = case operator
       when :<
-        IndefiniteRange.new(upper: rhs.value - 1)
+        IndefiniteRange.new(upper: value.lower - 1)
       when :<=
-        IndefiniteRange.new(upper: rhs.value)
+        IndefiniteRange.new(upper: value.lower)
       when :==
-        DefiniteRange.new(rhs.value, rhs.value)
+        DefiniteRange.new(value.lower, value.upper)
       when :>=
-        IndefiniteRange.new(lower: rhs.value)
+        IndefiniteRange.new(lower: value.upper)
       when :>
-        IndefiniteRange.new(lower: rhs.value + 1)
+        IndefiniteRange.new(lower: value.upper + 1)
       end
 
-      { lhs.name => value }
+      { lhs.name => bounds }
     end
   end
 
   class ArithmeticOperatorStrategy < BinaryOperatorStrategy
-    def possible_variable_values(context)
-      #TODO something sensible so you can have: expect x where x > 1 + 2
-      {}
-    end
   end
 end

@@ -9,7 +9,7 @@ module Verifier
     end
 
     def static_evaluate(context)
-      value
+      DefiniteRange.new(value, value)
     end
 
     def to_s
