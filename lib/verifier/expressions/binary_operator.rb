@@ -60,10 +60,21 @@ module Verifier
 
     def possible_variable_values(context)
       lhs_values = lhs.possible_variable_values(context)
-      @expression.assign(context, lhs_values)
+      context.assign(lhs_values)
       rhs_values = rhs.possible_variable_values(context)
-      values = @expression.combine_values(lhs_values, rhs_values)
-      @expression.assign(context, values)
+      context.assign(combine_values(lhs_values, rhs_values))
+    end
+
+    private
+
+    def combine_values(first_values, second_values)
+      first_values.merge(second_values) do |name, value1, value2|
+        if value1 && value2
+          value1.constrain(value2)
+        else
+          value1 || value2
+        end
+      end
     end
   end
 

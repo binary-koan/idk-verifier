@@ -1,9 +1,9 @@
 require "spec_helper"
 
-RSpec.describe Verifier::Context do
+RSpec.describe Verifier::Scope do
   let(:statements) { [] }
   let(:variables) { {} }
-  subject(:scope) { Verifier::Context.new(statements, variables) }
+  subject(:scope) { Verifier::Scope.new(statements, variables) }
 
   def mock_statement(str)
     class << str

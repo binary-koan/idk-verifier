@@ -5,16 +5,16 @@ require "spec_helper"
 #     let(:program) { Parser.parse_file(script) }
 #
 #     it "parses correctly" do
-#       expect(program).to be_a Context
+#       expect(program).to be_a Scope
 #     end
 #
 #     if script =~ /^expect_not/
 #       it "throws an error when verifying" do
-#         expect { program.verify }.to raise_error Verifier::AssertionError
+#         expect { program.static_evaluate }.to raise_error Verifier::AssertionError
 #       end
 #     else
 #       it "verifies successfully" do
-#         expect(program.verify).to be_truthy
+#         expect(program.static_evaluate).to be_truthy
 #       end
 #     end
 #   end

@@ -12,16 +12,6 @@ module Verifier
         context[name] = value
       end
     end
-
-    def combine_values(first_values, second_values)
-      first_values.merge(second_values) do |name, value1, value2|
-        if value1 && value2
-          value1.constrain(value2)
-        else
-          value1 || value2
-        end
-      end
-    end
   end
 end
 

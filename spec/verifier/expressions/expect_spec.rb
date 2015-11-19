@@ -13,7 +13,7 @@ RSpec.describe Verifier::ExpectExpression do
       end
 
       it "sets up a variable range in locals" do
-        locals = {}
+        locals = Verifier::ScopeContext.new
         expression.static_evaluate(locals)
         expect(locals["x"]).to eq Verifier::DefiniteRange.new(1, 99)
       end
