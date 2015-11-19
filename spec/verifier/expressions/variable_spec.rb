@@ -4,8 +4,16 @@ RSpec.describe Verifier::VariableExpression do
   describe "#static_evaluate" do
     let(:expression) { variable("x") }
 
-    it "fails if the variable is not in the context" do
-      expect { expression.static_evaluate({}) }.to raise_error Verifier::UndefinedVariableError
+    context "when the variable does not exist in the current context" do
+      it "returns a default value range" do
+        expect(expression.static_evaluate({})).to eq value_range
+      end
+
+      it "sets the variable in the context" do
+        context = {}
+        expression.static_evaluate(context)
+        expect(context["x"]).to eq value_range
+      end
     end
 
     it "returns the value of a variable in the context" do

@@ -12,7 +12,7 @@ module Verifier
       if context.has_key?(@name)
         context[@name]
       else
-        fail(UndefinedVariableError, "You can't use #{@name} before it's defined")
+        context[@name] = ValueRange.new
       end
     end
 
