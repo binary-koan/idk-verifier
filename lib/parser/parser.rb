@@ -6,8 +6,9 @@ require_relative '../verifier/expression'
 
 # Unary operators which prefix things
 PREFIX_UNARY_OPERATORS = {
-  '!' => { :precedence => 10, :sym => :! }, # Logical not
-  '-' => { :precedence => 10, :sym => :- }, # Negation
+  '!' => { :precedence => 100, :sym => :! }, # Logical not
+  '-' => { :precedence => 100, :sym => :- }, # Negation
+  '+' => { :precedence => 100, :sym => :+ }, # No-operation
 }
 
 POSTFIX_UNARY_OPERATORS = {
@@ -16,23 +17,30 @@ POSTFIX_UNARY_OPERATORS = {
 
 BINARY_OPERATORS = {
   # Arithmetic
-  '+' => { :precedence => 10, :sym => :+ }, # Addition
-  '-' => { :precedence => 10, :sym => :- }, # Subtraction
-  '*' => { :precedence => 10, :sym => :* }, # Multiplication
-  '/' => { :precedence => 10, :sym => :/ }, # Division
+  '+' => { :precedence => 70, :sym => :+ }, # Addition
+  '-' => { :precedence => 70, :sym => :- }, # Subtraction
+  '*' => { :precedence => 80, :sym => :* }, # Multiplication
+  '/' => { :precedence => 80, :sym => :/ }, # Division
   '^' => { :precedence => 10, :sym => :^ }, # Power
 
+  '++' => { :precedence => 100, :sym => :"++" }, # Increment in place
+  '--' => { :precedence => 100, :sym => :"--" }, # Decrement in place
+  '+=' => { :precedence => 20,  :sym => :"+=" }, # Add in place
+  '-=' => { :precedence => 20,  :sym => :"-=" }, # Subtract in place
+  '*=' => { :precedence => 20,  :sym => :"*=" }, # Multiply in place
+  '/=' => { :precedence => 20,  :sym => :"/=" }, # Divide in place
+
   # Comparisons
-  '<'  => { :precedence => 10, :sym => :< }, # Less than
-  '<=' => { :precedence => 10, :sym => :<= }, # Less than or equal to
-  '>'  => { :precedence => 10, :sym => :> }, # Greater than
-  '>=' => { :precedence => 10, :sym => :>= }, # Greater than or equal to
-  '==' => { :precedence => 10, :sym => :== }, # Equals
-  '!=' => { :precedence => 10, :sym => :!= }, # Not-equal-to
+  '<'  => { :precedence => 60, :sym => :< }, # Less than
+  '<=' => { :precedence => 60, :sym => :<= }, # Less than or equal to
+  '>'  => { :precedence => 60, :sym => :> }, # Greater than
+  '>=' => { :precedence => 60, :sym => :>= }, # Greater than or equal to
+  '==' => { :precedence => 50, :sym => :== }, # Equals
+  '!=' => { :precedence => 50, :sym => :!= }, # Not-equal-to
 
   # Logical
-  '&&' => { :precedence => 10, :sym => :"&&" }, # And
-  '||' => { :precedence => 10, :sym => :"||" }, # Or
+  '&&' => { :precedence => 40, :sym => :"&&" }, # And
+  '||' => { :precedence => 30, :sym => :"||" }, # Or
 }
 
 def precedence_binop(op)
