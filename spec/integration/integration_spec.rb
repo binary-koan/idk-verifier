@@ -15,7 +15,7 @@ Dir.entries(SCRIPTS_DIR).each do |script|
       expect(program).to be_a Verifier::Scope
     end
 
-    if script =~ /^expect_not/
+    if script =~ /fail/
       it "throws an error when verifying" do
         expect { program.static_evaluate }.to raise_error Verifier::AssertionError
       end

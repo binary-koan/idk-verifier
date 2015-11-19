@@ -47,3 +47,22 @@ assert y >= 100 && y <= 300
     END
   end
 end
+
+RSpec.describe "Basic failing condition" do
+  let(:expressions) do
+    [
+      expectation(["x"], bin_op(:"&&",
+        bin_op(:>=, variable("x"), constant(0)),
+        bin_op(:<=, variable("x"), constant(100))
+      )),
+      assertion(bin_op(:>, variable("x"), constant(100)))
+    ]
+  end
+
+  it "raises an error when verifying the conditions" do
+    context = {}
+    expect do
+      expressions.each { |e| e.static_evaluate(context) }
+    end.to raise_error Verifier::AssertionError
+  end
+end

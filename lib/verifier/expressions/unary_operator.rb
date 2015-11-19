@@ -10,13 +10,10 @@ module Verifier
     end
 
     def static_evaluate(context)
-      # ...
-    end
-
-    def variable_constraints(context)
-      values = @expression.variable_constraints(context)
-      values.each { |name, value| values[name] = value.negate }
-      values
+      case operator
+      when :-
+        -@expression.static_evaluate(context)
+      end
     end
 
     def to_s

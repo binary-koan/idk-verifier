@@ -77,8 +77,8 @@ module Verifier
     # Arithmetic
 
     def -@
-      # This is probably wrong ...
-      ValueRange.new(-lower, -upper)
+      # This may be wrong ...
+      ValueRange.new(upper: -lower, lower: -upper)
     end
 
     [:+, :-, :*, :/].each do |operator|
