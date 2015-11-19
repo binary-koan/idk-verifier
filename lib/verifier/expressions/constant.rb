@@ -17,7 +17,11 @@ module Verifier
     end
 
     def ==(other)
+      if other.is_a?(Integer)
         @value == other
+      else
+        @value == other.value
+      end
     end
   end
 end

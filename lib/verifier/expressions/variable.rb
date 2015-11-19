@@ -9,7 +9,11 @@ module Verifier
     end
 
     def static_evaluate(context)
-      context[@name]
+      if context.has_key?(@name)
+        context[@name]
+      else
+        fail(UndefinedVariableError, "You can't use #{@name} before it's defined")
+      end
     end
 
     def to_s
@@ -23,5 +27,8 @@ module Verifier
         false
       end
     end
+  end
+
+  class UndefinedVariableError < StandardError
   end
 end
