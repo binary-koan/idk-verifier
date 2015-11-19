@@ -29,59 +29,70 @@ module Verifier
     end
   end
 
-  class AndOperatorStrategy
+  # Strategies for evaluating the expression
+
+  class BinaryOperatorStrategy
     def initialize(expression)
       @expression = expression
     end
 
+    [:operator, :lhs, :rhs].each do |method|
+      define_method(method) { @expression.send(method) }
+    end
+
     def static_evaluate(context)
-      @expression.lhs.static_evaluate(context) && @expression.rhs.static_evaluate(context)
+      lhs_value = lhs.static_evaluate(context)
+      rhs_value = rhs.static_evaluate(context)
+      lhs_value.send(@expression.operator, rhs_value)
+    end
+  end
+
+  class AndOperatorStrategy < BinaryOperatorStrategy
+    def static_evaluate(context)
+      lhs.static_evaluate(context) && rhs.static_evaluate(context)
     end
 
     def possible_variable_values(context)
-      lhs_values = @expression.lhs.possible_variable_values(context)
+      lhs_values = lhs.possible_variable_values(context)
       @expression.assign(context, lhs_values)
-      rhs_values = @expression.rhs.possible_variable_values(context)
+      rhs_values = rhs.possible_variable_values(context)
       values = @expression.combine_values(lhs_values, rhs_values)
       @expression.assign(context, values)
     end
   end
 
-  class ComparisonOperatorStrategy
-    def initialize(expression)
-      @expression = expression
-    end
-
-    def static_evaluate(context)
-      lhs_value = @expression.lhs.static_evaluate(context)
-      rhs_value = @expression.rhs.static_evaluate(context)
-      lhs_value.send(@expression.operator, rhs_value)
-    end
-
+  class ComparisonOperatorStrategy < BinaryOperatorStrategy
     def possible_variable_values(context)
-      simple_variable_constraint
+      simple_variable_constraint || {}
     end
 
     private
 
     def simple_variable_constraint
-      return unless @expression.lhs.is_a?(VariableExpression) &&
-        @expression.rhs.is_a?(ConstantExpression)
+      return unless lhs.is_a?(VariableExpression) &&
+        rhs.is_a?(ConstantExpression)
 
-      value = case @expression.operator
+      value = case operator
       when :<
-        IndefiniteRange.new(upper: @expression.rhs.value - 1)
+        IndefiniteRange.new(upper: rhs.value - 1)
       when :<=
-        IndefiniteRange.new(upper: @expression.rhs.value)
+        IndefiniteRange.new(upper: rhs.value)
       when :==
-        DefiniteRange.new(@expression.rhs.value, @expression.rhs.value)
+        DefiniteRange.new(rhs.value, rhs.value)
       when :>=
-        IndefiniteRange.new(lower: @expression.rhs.value)
+        IndefiniteRange.new(lower: rhs.value)
       when :>
-        IndefiniteRange.new(lower: @expression.rhs.value + 1)
+        IndefiniteRange.new(lower: rhs.value + 1)
       end
 
-      { @expression.lhs.name => value }
+      { lhs.name => value }
+    end
+  end
+
+  class ArithmeticOperatorStrategy < BinaryOperatorStrategy
+    def possible_variable_values(context)
+      #TODO something sensible so you can have: expect x where x > 1 + 2
+      {}
     end
   end
 end
