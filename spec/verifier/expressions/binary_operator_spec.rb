@@ -57,4 +57,68 @@ RSpec.describe Verifier::BinaryOperatorExpression do
       end
     end
   end
+
+  describe "#variable_constraints" do
+    let(:context) { {} }
+
+    context "with a simple expression of the form <variable> <operator> <constant>" do
+      let(:constraints) { bin_op(operator, variable("x"), constant(100)).variable_constraints(context) }
+
+      subject { constraints["x"].to_range }
+
+      context "with the < operator" do
+        let(:operator) { :< }
+        it { is_expected.to eq value_range(upper: 99).to_range }
+      end
+
+      context "with the <= operator" do
+        let(:operator) { :<= }
+        it { is_expected.to eq value_range(upper: 100).to_range }
+      end
+
+      context "with the > operator" do
+        let(:operator) { :> }
+        it { is_expected.to eq value_range(lower: 101).to_range }
+      end
+
+      context "with the >= operator" do
+        let(:operator) { :>= }
+        it { is_expected.to eq value_range(lower: 100).to_range }
+      end
+
+      context "with the == operator" do
+        let(:operator) { :== }
+        it { is_expected.to eq value_range(lower: 100, upper: 100).to_range }
+      end
+    end
+
+    context "with the && operator and two simple expressions" do
+      let(:constraints) do
+        bin_op(:"&&",
+          bin_op(:<, variable("x"), constant(100)),
+          bin_op(:>, variable("x"), constant(0))
+        ).variable_constraints(context)
+      end
+
+      it "combines the constraints" do
+        expect(constraints["x"].to_range).to eq value_range(lower: 1, upper: 99).to_range
+      end
+    end
+
+    context "with the || operator and two simple expressions" do
+      let(:constraints) do
+        bin_op(:"||",
+          bin_op(:>, variable("x"), constant(100)),
+          bin_op(:<, variable("x"), constant(0))
+        ).variable_constraints(context)
+      end
+
+      it "combines the constraints" do
+        x_constraint = constraints["x"]
+        expect(x_constraint).to be_a Verifier::UnionRange
+        expect(x_constraint.ranges[0].to_range).to eq value_range(lower: 101).to_range
+        expect(x_constraint.ranges[1].to_range).to eq value_range(upper: -1).to_range
+      end
+    end
+  end
 end

@@ -52,6 +52,8 @@ module Verifier
 
     # Comparisons
 
+    # This has unexpected behaviour, eg. value_range(upper: 900) == value_range(upper: 1000)
+    # Would be good to make it sensible - can it be done without breaking the verifier?
     def <=>(other)
       if other.is_a?(ValueRange)
         if upper < other.lower then -1
