@@ -1,4 +1,42 @@
 
+class Characters
+
+  def initialize(characters)
+    @characters = characters
+    @buffer = []
+  end
+
+  def next
+    if !@buffer.empty?
+      return @buffer.pop
+    end
+
+    @characters.next
+  end
+
+  def eat_whitespace
+    c = @characters.next
+    while c.strip.empty?
+      c = @characters.next
+    end
+    feed(c)
+  end
+
+  def feed(character)
+    @buffer.push(character)
+  end
+
+  def peek
+    peeked = self.next
+    feed(peeked)
+    peeked
+  end
+
+  def eat
+    self.next
+  end
+end
+
 class Token
 
   attr_reader :type, :value
@@ -64,7 +102,7 @@ end
 
 class Tokenizer
   def initialize(characters)
-    @characters = characters
+    @characters = Characters.new(characters)
   end
 
   def next
@@ -74,6 +112,7 @@ class Tokenizer
       return token
     end
 
+    @characters.eat_whitespace
     first_char = @characters.peek
 
     if first_char == '"'
@@ -142,12 +181,13 @@ class Tokenizer
     chars = []
 
     loop do
-      c = @characters.next
+      c = @characters.peek
 
       if block.call(c)
         break
       else
         chars << c
+        @characters.eat
       end
     end
 

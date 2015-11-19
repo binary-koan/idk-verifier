@@ -66,7 +66,6 @@ class Parser
 
   def parse_primary_expression
     first_token = @tokenizer.next
-    puts "first_token: #{first_token}"
 
     if first_token.is_word?
       VariableExpression.new(first_token.value)
@@ -83,8 +82,6 @@ class Parser
   def parse_binop_rhs(lhs, min_precedence)
     lookahead = @tokenizer.peek
 
-
-    puts "lookahead: #{lookahead.class}"
     while precedence_binop(lookahead) >= min_precedence do
       op = lookahead
       @tokenizer.next
