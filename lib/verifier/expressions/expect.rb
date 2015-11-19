@@ -8,7 +8,7 @@ module Verifier
     end
 
     def static_evaluate(context)
-      assign(context, possible_variable_values)
+      assign(context, possible_variable_values(context))
     end
 
     def possible_variable_values(context)

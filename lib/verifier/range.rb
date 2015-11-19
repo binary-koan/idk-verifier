@@ -14,14 +14,23 @@ module Verifier
     attr_reader :upper
     attr_reader :lower
 
-    def initialize(upper:, lower:)
+    def initialize(upper: nil, lower: nil)
       @upper = upper
       @lower = lower
     end
 
     def constrain(other)
-      new_upper = (upper && other.upper > upper) ? other.upper : upper
-      new_lower = (lower && other.lower > lower) ? other.lower : lower
+      if upper && other.upper
+        new_upper = [upper, other.upper].max
+      else
+        new_upper = upper || other.upper
+      end
+
+      if lower && other.lower
+        new_lower = [lower, other.lower].min
+      else
+        new_lower = lower || other.lower
+      end
 
       if new_upper && new_lower
         DefiniteRange.new(new_upper, new_lower)

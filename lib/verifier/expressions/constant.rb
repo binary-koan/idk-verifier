@@ -2,6 +2,8 @@ module Verifier
   class ConstantExpression
     include Expression
 
+    attr_reader :value
+
     def initialize(value)
       @value = value
     end

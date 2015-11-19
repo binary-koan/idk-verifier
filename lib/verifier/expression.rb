@@ -7,8 +7,6 @@ module Verifier
       {}
     end
 
-    private
-
     def assign(context, values)
       values.each do |name, value|
         context[name] = value
