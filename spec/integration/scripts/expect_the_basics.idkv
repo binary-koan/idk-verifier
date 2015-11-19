@@ -1,0 +1,5 @@
+expect x where x >= 0 && x <= 100
+assert x >= 0
+assert x <= 100
+assert x > -1
+assert x < 101
