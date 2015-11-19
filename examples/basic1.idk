@@ -1,0 +1,8 @@
+
+expect n where n > 0
+
+while n > 1
+    n = n - 1
+    factorial = factorial * n
+
+assert factorial >= n
