@@ -10,8 +10,7 @@ class RangeBuilder
   end
 end
 
-BinaryOperatorExpression#possible_ranges(ranges)
-  if lhs.is_a?(VariableExpression) && rhs.is_a?(ConstantExpression)
+BinaryOperatorExpression#possible_ranges(locals)
+  if lhs.is_a?(VariableExpression)
   if operator == :lt
-    ranges[lhs.name] ||= ValueRange.new
-    ranges[lhs.name].constrain(:negative_infinity, rhs.value - 1)
+    { rhs.name => DefiniteRange.new(:negative_infinity, rhs.possible_ranges(locals) - 1) }

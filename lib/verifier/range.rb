@@ -10,6 +10,27 @@ module Verifier
     # ...
   end
 
+  class IndefiniteRange < ValueRange
+    attr_reader :upper
+    attr_reader :lower
+
+    def initialize(upper:, lower:)
+      @upper = upper
+      @lower = lower
+    end
+
+    def constrain(other)
+      new_upper = (upper && other.upper > upper) ? other.upper : upper
+      new_lower = (lower && other.lower > lower) ? other.lower : lower
+
+      if new_upper && new_lower
+        DefiniteRange.new(new_upper, new_lower)
+      else
+        IndefiniteRange.new(upper: new_upper, lower: new_lower)
+      end
+    end
+  end
+
   class DefiniteRange < ValueRange
     attr_reader :upper
     attr_reader :lower
@@ -50,10 +71,14 @@ module Verifier
 
     def ==(other)
       if other.is_a?(DefiniteRange)
-        range == 0 && other.range == 0 && lower == other.lower
+        lower == other.lower && upper == other.upper
       else
         range == 0 && lower == other
       end
+    end
+
+    def strictly_equal?(other)
+      range == 0 && other.range == 0 && lower == other.lower
     end
 
     def !=(other)

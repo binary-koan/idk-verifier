@@ -7,8 +7,8 @@ RSpec.describe Verifier::DefiniteRange do
   let(:value_range1) { Verifier::DefiniteRange.new(range1.begin, range1.end) }
   let(:value_range2) { Verifier::DefiniteRange.new(range2.end, range2.begin) }
 
-  describe "#==" do
-    subject { value_range1 == value_range2 }
+  describe "#strictly_equal?" do
+    subject { value_range1.strictly_equal?(value_range2) }
 
     context "when the bounds are identical but the range is non-zero" do
       it { is_expected.to eq false }
