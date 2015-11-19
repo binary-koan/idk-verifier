@@ -30,4 +30,20 @@ RSpec.describe "Basic successful conditions" do
     expect(context["x"]).to eq value_range(lower: 0, upper: 100)
     expect(context["y"]).to eq value_range(lower: 100, upper: 300)
   end
+
+  it "creates a string from the program" do
+    scope = Verifier::Scope.new(expressions)
+    expect(scope.to_s).to eq <<-END
+expect x where x >= 0 && x <= 100
+# x is 0..100
+y = x * 2 + 100
+# x is 0..100 && y is 100..300
+assert x >= 0 && x <= 100
+# x is 0..100 && y is 100..300
+assert x > -1 && x < 101
+# x is 0..100 && y is 100..300
+assert y >= 100 && y <= 300
+# x is 0..100 && y is 100..300
+    END
+  end
 end
