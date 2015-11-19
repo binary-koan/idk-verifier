@@ -7,6 +7,10 @@ describe Parser do
     Parser.new(msg.chars.each).parse_expression
   end
 
+  def unary(sym, inner)
+    Verifier::UnaryOperatorExpression.new(sym, inner)
+  end
+
   def binop(sym, lhs, rhs)
     Verifier::BinaryOperatorExpression.new(sym, lhs, rhs)
   end
@@ -17,6 +21,10 @@ describe Parser do
 
   def constant(value)
     Verifier::ConstantExpression.new(value)
+  end
+
+  def assignment(name, value)
+    Verifier::AssignmentExpression.new(name, value)
   end
 
   context "binary operators" do
@@ -57,15 +65,30 @@ describe Parser do
     end
   end
 
+  context "prefix unary operators" do
+    it "parses arithmetic negation" do
+      expr = parse_expression('-abc')
+      expect(expr).to eq unary(:-, variable('abc'))
+    end
+
+    it "parses boolean negation" do
+      expr = parse_expression('!123')
+      expect(expr).to eq unary(:!, constant(123))
+    end
+  end
+
   it "parses parenthesized expressions" do
     expect(parse_expression("(1234)")).to eq constant(1234)
   end
 
-  context "when parsing an expect expression" do
-    it "sdfa" do
-      expr = parse_expression("expect a where a > 0")
-      expect(expr).to eq Verifier::ExpectExpression.new('a',
-                            binop(:>, variable('a'), constant(0)))
-    end
+  it "parses an assignment expression" do
+    expr = parse_expression("abcd = 1234")
+    expect(expr).to eq assignment(variable('abcd'), constant(1234))
+  end
+
+  it "parses an expect expression" do
+    expr = parse_expression("expect a where a > 0")
+    expect(expr).to eq Verifier::ExpectExpression.new('a',
+                          binop(:>, variable('a'), constant(0)))
   end
 end
