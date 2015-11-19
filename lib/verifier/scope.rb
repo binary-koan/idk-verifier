@@ -1,3 +1,5 @@
+require_relative "expression"
+
 module Verifier
   class Scope
     def initialize(statements, base_variables={})

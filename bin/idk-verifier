@@ -6,7 +6,7 @@ require_relative '../lib/parser/parser'
 FILENAME = ARGV[0]
 puts "Opening '#{FILENAME}' ..."
 
-scope = Parser.parse_file(FILENAME)
+scope = Verifier::Parser.parse_file(FILENAME)
 
 begin
   scope.static_evaluate

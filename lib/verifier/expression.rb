@@ -1,3 +1,5 @@
+require_relative "range"
+
 module Verifier
   module Expression
     def static_evaluate(context)
