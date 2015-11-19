@@ -1,9 +1,9 @@
 require "spec_helper"
 
-RSpec.describe Verifier::Scope do
+RSpec.describe Verifier::Context do
   let(:statements) { [] }
-  let(:locals) { [] }
-  subject(:scope) { Verifier::Scope.new(statements, locals) }
+  let(:variables) { {} }
+  subject(:scope) { Verifier::Context.new(statements, variables) }
 
   def mock_statement(str)
     class << str
@@ -22,8 +22,8 @@ RSpec.describe Verifier::Scope do
     end
 
     context "with local variables" do
-      let(:locals) { ["x == 0", "y == 1"] }
-      it { is_expected.to eq "# x == 0 && y == 1\n" }
+      let(:variables) { { "x" => 0, "y" => 1 } }
+      it { is_expected.to eq "# x is 0 && y is 1\n" }
     end
 
     context "with statements and no local variables" do
@@ -33,13 +33,13 @@ RSpec.describe Verifier::Scope do
 
     context "with statements and local variables" do
       let(:statements) { [mock_statement("one"), mock_statement("two")] }
-      let(:locals) { ["z == 0"] }
+      let(:variables) { { "z" => 0 } }
       it { is_expected.to eq <<-END }
-# z == 0
+# z is 0
 one
-# z == 0
+# z is 0
 two
-# z == 0
+# z is 0
       END
     end
   end

@@ -5,7 +5,7 @@ require "spec_helper"
 #     let(:program) { Parser.parse_file(script) }
 #
 #     it "parses correctly" do
-#       expect(program).to be_a Program
+#       expect(program).to be_a Context
 #     end
 #
 #     if script =~ /^expect_not/
