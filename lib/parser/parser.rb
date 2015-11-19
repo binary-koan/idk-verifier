@@ -7,6 +7,7 @@ require_relative '../verifier/expression'
 # Unary operators which prefix things
 PREFIX_UNARY_OPERATORS = {
   '!' => { :precedence => 10, :sym => :! }, # Logical not
+  '-' => { :precedence => 10, :sym => :- }, # Negation
 }
 
 POSTFIX_UNARY_OPERATORS = {
@@ -83,8 +84,15 @@ class Parser
       fail # we don't support strings yet
     elsif first_token.is_integer?
       Verifier::ConstantExpression.new(first_token.value)
-    elsif first_token == '('
-      parse_parenthesized_expression
+    elsif first_token.is_symbol?
+
+      if first_token == '('
+        parse_parenthesized_expression
+      end
+
+      if PREFIX_UNARY_OPERATORS.include?(first_token.value)
+        parse_prefix_unary_expression(first_token)
+      end
     else
       fail("Unrecognised token: #{first_token}")
     end
@@ -101,6 +109,12 @@ class Parser
     else
       Verifier::VariableExpression.new(first_word.value)
     end
+  end
+
+  def parse_prefix_unary_expression(sym_token)
+    sym = PREFIX_UNARY_OPERATORS[sym_token.value][:sym]
+    inner = parse_expression
+    Verifier::UnaryOperatorExpression.new(sym, inner)
   end
 
   def parse_expect_expression
