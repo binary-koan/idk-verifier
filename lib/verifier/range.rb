@@ -1,13 +1,37 @@
 module Verifier
   class UnionRange
+    attr_reader :ranges
+
     def initialize(*ranges)
       @ranges = ranges
     end
 
-    # ...
+    def &(other)
+      # Do something ...
+    end
+
+    def range
+      [ranges.map(&:lower).min, ranges.map(&:upper).max]
+    end
+
+    [:<, :<=, :>, :>=, :==, :strictly_equal?, :outside?].each do |operator|
+      define_method(operator) do |other|
+        ranges.all? { |range| range.send(operator, other) }
+      end
+    end
+
+    #TODO unary negation
+
+    [:+, :-, :*, :/].each do |operator|
+      define_method(operator) do |other|
+        ranges.map { |range| range.send(operator, other) }
+      end
+    end
   end
 
   class ValueRange
+    include Comparable
+
     attr_reader :upper
     attr_reader :lower
 
@@ -16,7 +40,7 @@ module Verifier
       @lower = lower
     end
 
-    def constrain(other)
+    def &(other)
       new_upper = [upper, other.upper].min
       new_lower = [lower, other.lower].max
       ValueRange.new(upper: new_upper, lower: new_lower)
@@ -28,44 +52,22 @@ module Verifier
 
     # Comparisons
 
-    def <(other)
-      self <= (other - 1)
-    end
-
-    def <=(other)
+    def <=>(other)
       if other.is_a?(ValueRange)
-        upper <= other.lower
+        if upper < other.lower then -1
+        elsif lower > other.upper then 1
+        else 0
+        end
       else
-        upper <= other
-      end
-    end
-
-    def >(other)
-      self >= (other + 1)
-    end
-
-    def >=(other)
-      if other.is_a?(ValueRange)
-        lower >= other.upper
-      else
-        lower >= other
-      end
-    end
-
-    def ==(other)
-      if other.is_a?(ValueRange)
-        lower == other.lower && upper == other.upper
-      else
-        range == 0 && lower == other
+        if upper < other then -1
+        elsif lower > other then 1
+        else 0
+        end
       end
     end
 
     def strictly_equal?(other)
       range == 0 && other.range == 0 && lower == other.lower
-    end
-
-    def !=(other)
-      outside?(other)
     end
 
     def outside?(other)

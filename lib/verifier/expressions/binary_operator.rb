@@ -51,9 +51,14 @@ module Verifier
     end
 
     def static_evaluate(context)
-      lhs_value = lhs.static_evaluate(context)
-      rhs_value = rhs.static_evaluate(context)
-      lhs_value.send(@expression.operator, rhs_value)
+      lhs_value, rhs_value = operand_values(context)
+      lhs_value.send(operator, rhs_value)
+    end
+
+    private
+
+    def operand_values(context)
+      [lhs.static_evaluate(context), rhs.static_evaluate(context)]
     end
   end
 
@@ -73,7 +78,7 @@ module Verifier
     def combined_constraints(first_values, second_values)
       first_values.merge(second_values) do |name, value1, value2|
         if value1 && value2
-          value1.constrain(value2)
+          value1 & value2
         else
           value1 || value2
         end
@@ -82,6 +87,18 @@ module Verifier
   end
 
   class ComparisonOperatorStrategy < BinaryOperatorStrategy
+    def static_evaluate(context)
+      if operator == :==
+        lhs_value, rhs_value = operand_values(context)
+        lhs_value.strictly_equal?(rhs_value)
+      elsif operator == :!=
+        lhs_value, rhs_value = operand_values(context)
+        lhs_value.outside?(rhs_value)
+      else
+        super
+      end
+    end
+
     def variable_constraints(context)
       simple_variable_constraint(context) || {}
     end
