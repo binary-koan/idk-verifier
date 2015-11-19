@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/parser/token'
+require_relative '../lib/parser/parser'
+
+FILENAME = ARGV[0]
+puts "Opening '#{FILENAME}' ..."
+
+scope = Parser.parse_file(FILENAME)
+
+begin
+  scope.static_evaluate
+  puts "Verified successfully!"
+  puts "This is how I did it ..."
+  puts
+  puts scope.to_s
+rescue Verifier::AssertionError => e
+  puts e
+end

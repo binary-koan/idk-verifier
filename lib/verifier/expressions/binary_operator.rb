@@ -13,7 +13,7 @@ module Verifier
       when :"&&" then AndOperatorStrategy.new(self)
       when :"||" then OrOperatorStrategy.new(self)
       when :<, :<=, :==, :>, :>= then ComparisonOperatorStrategy.new(self)
-      when :+, :-, :*, :/ then ArithmeticOperatorStrategy.new(self)
+      else BinaryOperatorStrategy.new(self)
       end
     end
 
@@ -56,6 +56,10 @@ module Verifier
     def static_evaluate(context)
       lhs_value, rhs_value = operand_values(context)
       lhs_value.send(operator, rhs_value)
+    end
+
+    def variable_constraints(context)
+      {}
     end
 
     private
@@ -151,8 +155,5 @@ module Verifier
 
       { lhs.name => bounds }
     end
-  end
-
-  class ArithmeticOperatorStrategy < BinaryOperatorStrategy
   end
 end
