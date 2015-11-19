@@ -55,16 +55,14 @@ module Verifier
     # This has unexpected behaviour, eg. value_range(upper: 900) == value_range(upper: 1000)
     # Would be good to make it sensible - can it be done without breaking the verifier?
     def <=>(other)
-      if other.is_a?(ValueRange)
-        if upper < other.lower then -1
-        elsif lower > other.upper then 1
-        else 0
-        end
+      other = ValueRange.new(upper: other, lower: other) unless other.is_a?(ValueRange)
+
+      if upper < other.lower
+        -1
+      elsif lower > other.upper
+        1
       else
-        if upper < other then -1
-        elsif lower > other then 1
-        else 0
-        end
+        0
       end
     end
 

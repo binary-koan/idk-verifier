@@ -135,3 +135,23 @@ RSpec.describe Verifier::ValueRange do
     end
   end
 end
+
+RSpec.describe Verifier::UnionRange do
+  context "with a simple union of two finite ranges" do
+    let(:range) { union_range(value_range(upper: 100, lower: 0), value_range(upper: 300, lower: 100)) }
+
+    describe "#outside?" do
+      it "is false for a value inside one of the ranges" do
+        expect(range.outside?(value_range(lower: 50, upper: 75))).to eq false
+      end
+
+      it "is false for a value which spans both ranges" do
+        expect(range.outside?(value_range(lower: 50, upper: 250))).to eq false
+      end
+
+      it "is true for a value below all ranges" do
+        # ...
+      end
+    end
+  end
+end

@@ -32,4 +32,8 @@ RSpec.configure do
   def value_range(**kwargs)
     Verifier::ValueRange.new(**kwargs)
   end
+
+  def union_range(*args)
+    Verifier::UnionRange.new(*args)
+  end
 end

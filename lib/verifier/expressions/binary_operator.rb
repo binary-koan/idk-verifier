@@ -19,6 +19,8 @@ module Verifier
 
     def static_evaluate(context)
       @evaluation_strategy.static_evaluate(context)
+    rescue => e
+      fail(StandardError, "Unable to evaluate #{self}")
     end
 
     def variable_constraints(context)
