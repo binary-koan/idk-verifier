@@ -2,6 +2,8 @@ module Verifier
   class ExpectExpression
     include Expression
 
+    attr_reader :names, :expression
+
     def initialize(names, expression)
       @names = names
       @expression = expression
@@ -17,6 +19,15 @@ module Verifier
 
     def to_s
       "expect #{@names.join(', ')} where #{@expression}"
+    end
+
+    def ==(other)
+      if other.is_a?(ExpectExpression)
+        @names == other.names
+        @expression == other.expression
+      else
+        false
+      end
     end
   end
 end

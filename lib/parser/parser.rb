@@ -101,12 +101,27 @@ class Parser
 
   def parse_expect_expression
     variables = parse_word_list
+    expect(Token.word('where'))
     expr = parse_expression
     Verifier::ExpectExpression.new(variables, expr)
   end
 
   def parse_word_list
+    words = []
 
+    loop do
+      words << parse_variable
+
+      if @tokenizer.peek != ','
+        break
+      end
+    end
+    words
+  end
+
+  def parse_variable
+    name = expect_type(:word)
+    Verifier::VariableExpression.new(name.value)
   end
 
   def parse_parenthesized_expression
@@ -141,5 +156,12 @@ class Parser
   def expect(value)
     token = @tokenizer.next
     fail if token != value
+    token
+  end
+
+  def expect_type(type)
+    token = @tokenizer.next
+    fail if token.type != type
+    token
   end
 end

@@ -24,7 +24,7 @@ module Verifier
       if self.is_a?(VariableExpression) && other.is_a?(VariableExpression)
         @name == other.name
       else
-        false
+        @name == other
       end
     end
   end
