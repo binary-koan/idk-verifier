@@ -63,6 +63,18 @@ describe Parser do
       expr = parse_expression("1 || false")
       expect(expr).to eq binop(:"||", constant(1), variable('false'))
     end
+
+    it "knows that multiplication has a higher precedence than addition" do
+      expr = parse_expression("1 + 2 * 2")
+      inner = binop(:*, constant(2), constant(2))
+      expect(expr).to eq binop(:+, constant(1), inner)
+    end
+
+    it "knows that AND has a higher precedence than OR" do
+      expr = parse_expression("A && B || C")
+      inner = binop(:"&&", variable('A'), variable('B'))
+      expect(expr).to eq binop(:"||", inner, variable('C'))
+    end
   end
 
   context "prefix unary operators" do
