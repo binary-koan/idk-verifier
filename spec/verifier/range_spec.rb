@@ -87,7 +87,7 @@ RSpec.describe Verifier::ValueRange do
     context "with two positive ranges" do
       let(:range1) { 2..8 }
       let(:range2) { 1..4 }
-      it { is_expected.to eq 1..4 }
+      it { is_expected.to eq -2..7 }
     end
 
     context "with a positive and negative range" do

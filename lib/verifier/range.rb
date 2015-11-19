@@ -69,7 +69,8 @@ module Verifier
     [:+, :-, :*, :/].each do |operator|
       define_method(operator) do |other|
         if other.is_a?(ValueRange)
-          ValueRange.new(lower.send(operator, other.lower), upper.send(operator, other.upper))
+          # Inefficient but effective
+          ValueRange.new(*calculated_combinations(operator, other).minmax)
         else
           ValueRange.new(lower.send(operator, other), upper.send(operator, other))
         end
@@ -84,6 +85,17 @@ module Verifier
 
     def to_range
       lower..upper
+    end
+
+    private
+
+    def calculated_combinations(operator, other)
+      [
+        lower.send(operator, other.lower),
+        lower.send(operator, other.upper),
+        upper.send(operator, other.lower),
+        upper.send(operator, other.upper)
+      ]
     end
   end
 end
