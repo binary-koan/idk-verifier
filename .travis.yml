@@ -1,5 +1,9 @@
 language: ruby
 rvm:
     - 2.2.2
+
 install: gem install rspec
 script: rspec
+
+notifications:
+    email: false
