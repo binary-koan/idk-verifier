@@ -49,6 +49,16 @@ def precedence_binop(op)
 end
 
 class Parser
+  def self.parse_file(filename)
+    parser = Parser.new(File.read(filename).chars.each)
+    expressions = []
+    while (expression = parser.parse_expression)
+      expressions << expression
+    end
+
+    Verifier::Scope.new(expressions)
+  end
+
   def initialize(characters)
     @tokenizer = Tokenizer.new(characters)
   end
@@ -76,14 +86,14 @@ class Parser
     elsif first_token == '('
       parse_parenthesized_expression
     else
-      fail
+      fail("Unrecognised token: #{first_token}")
     end
 
   end
 
   def parse_word_expression(first_word)
     case first_word.value
-    when 'expect'; parse_expect_expression
+    when 'expect' then parse_expect_expression
     else
       Verifier::VariableExpression.new(first_word.value)
     end
