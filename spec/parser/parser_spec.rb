@@ -64,7 +64,8 @@ describe Parser do
   # context "when parsing an expect expression" do
   #   it "sdfa" do
   #     expr = parse_expression("expect a where a > 0")
-  #     expect(expr).to eq Verifier::ExpectExpression.new('a', 'a > 0')
+  #     expect(expr).to eq Verifier::ExpectExpression.new('a',
+  #                           binop(:>, variable('a'), constant(0)))
   #   end
   # end
 end

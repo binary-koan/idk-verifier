@@ -158,7 +158,8 @@ class Tokenizer
     when '+', '-',
          '*', '/',
          '=', '(',
-         ')'
+         ')', '<',
+         '>'
       next_symbol_maybe_assign(first_char)
     when '&', '|'
       next_symbol_maybe_repeated(first_char)

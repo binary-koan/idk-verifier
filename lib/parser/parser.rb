@@ -21,22 +21,18 @@ BINARY_OPERATORS = {
   '/' => { :precedence => 10, :sym => :/ }, # Division
   '^' => { :precedence => 10, :sym => :^ }, # Power
 
+  # Comparisons
+  '<'  => { :precedence => 10, :sym => :< }, # Less than
+  '<=' => { :precedence => 10, :sym => :<= }, # Less than or equal to
+  '>'  => { :precedence => 10, :sym => :> }, # Greater than
+  '>=' => { :precedence => 10, :sym => :>= }, # Greater than or equal to
+  '==' => { :precedence => 10, :sym => :== }, # Equals
+  '!=' => { :precedence => 10, :sym => :!= }, # Not-equal-to
+
   # Logical
   '&&' => { :precedence => 10, :sym => :"&&" }, # And
   '||' => { :precedence => 10, :sym => :"||" }, # Or
 }
-
-def is_binop(op)
-  BINARY_OPERATORS.include?(op)
-end
-
-def is_prefix_unary_op(op)
-  PREFIX_UNARY_OPERATORS.include?(op)
-end
-
-def is_postfix_unary_op(op)
-  POSTFIX_UNARY_OPERATORS.include?(op)
-end
 
 def precedence_binop(op)
   if op.nil? || !op.is_symbol?
@@ -72,7 +68,7 @@ class Parser
     return nil if first_token.nil?
 
     if first_token.is_word?
-      Verifier::VariableExpression.new(first_token.value)
+      parse_word_expression(first_token)
     elsif first_token.is_string?
       fail # we don't support strings yet
     elsif first_token.is_integer?
@@ -82,6 +78,24 @@ class Parser
     else
       fail
     end
+
+  end
+
+  def parse_word_expression(first_word)
+    case first_word.value
+    when 'expect'; parse_expect_expression
+    else
+      Verifier::VariableExpression.new(first_word.value)
+    end
+  end
+
+  def parse_expect_expression
+    variables = parse_word_list
+    expr = parse_expression
+    Verifier::ExpectExpression.new(variables, expr)
+  end
+
+  def parse_word_list
 
   end
 
