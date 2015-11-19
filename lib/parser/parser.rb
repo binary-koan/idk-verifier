@@ -88,9 +88,8 @@ class Parser
 
       if first_token == '('
         parse_parenthesized_expression
-      end
+      elsif PREFIX_UNARY_OPERATORS.include?(first_token.value)
 
-      if PREFIX_UNARY_OPERATORS.include?(first_token.value)
         parse_prefix_unary_expression(first_token)
       end
     else
