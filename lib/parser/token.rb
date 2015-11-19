@@ -16,10 +16,10 @@ class Characters
 
   def eat_whitespace
     c = self.next
-    while c.strip.empty?
+    while c && c.strip.empty?
       c = self.next
     end
-    feed(c)
+    feed(c) if c
   end
 
   def feed(character)

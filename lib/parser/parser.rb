@@ -39,11 +39,11 @@ def is_postfix_unary_op(op)
 end
 
 def precedence_binop(op)
-  if !op.is_symbol?
+  if op.nil? || !op.is_symbol?
     return -1
   end
 
-  info = BINARY_OPERATORS[op]
+  info = BINARY_OPERATORS[op.value]
 
   if info
     info[:precedence]
@@ -59,9 +59,10 @@ class Parser
 
 
   def parse_expression
-    parse_binop_rhs(parse_primary_expression, 0)
-  end
+    lhs = parse_primary_expression
 
+    parse_binop_rhs(lhs, 0) if lhs
+  end
   private
 
   def parse_primary_expression
@@ -82,17 +83,19 @@ class Parser
   def parse_binop_rhs(lhs, min_precedence)
     lookahead = @tokenizer.peek
 
+    puts "#{lookahead.is_symbol?}"
     while precedence_binop(lookahead) >= min_precedence do
+
       op = lookahead
       @tokenizer.next
       rhs = parse_primary_expression
       lookahead = @tokenizer.peek
 
-      while precedence_binop(lookahead) > precedence_binop(op) do
+      while lookahead != nil && precedence_binop(lookahead) > precedence_binop(op) do
         rhs = parse_binop_rhs(rhs, precedence_binop(lookahead))
         lookahead = @tokenizer.peek
       end
-      lhs = BinaryOperatorExpression.new(BINARY_OPERATORS[op.value].sym, lhs, rhs)
+      lhs = Verifier::BinaryOperatorExpression.new(BINARY_OPERATORS[op.value][:sym], lhs, rhs)
     end
     lhs
   end
