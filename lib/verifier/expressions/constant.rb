@@ -17,7 +17,7 @@ module Verifier
     end
 
     def ==(other)
-      @value == other
+        @value == other
     end
   end
 end

@@ -17,7 +17,11 @@ module Verifier
     end
 
     def ==(other)
-      @name == other.name
+      if self.is_a?(VariableExpression) && other.is_a?(VariableExpression)
+        @name == other.name
+      else
+        false
+      end
     end
   end
 end

@@ -29,9 +29,13 @@ module Verifier
     end
 
     def ==(other)
-      (@operator == other.operator) &&
-      (@lhs == other.lhs) &&
-      (@rhs == other.rhs)
+      if self.is_a?(BinaryOperatorExpression) && other.is_a?(BinaryOperatorExpression)
+        (@operator == other.operator) &&
+        (@lhs == other.lhs) &&
+        (@rhs == other.rhs)
+      else
+        false
+      end
     end
   end
 
