@@ -1,4 +1,7 @@
 module Verifier
+  class AssertionError < StandardError
+  end
+
   class AssertExpression
     include Expression
 
@@ -8,7 +11,7 @@ module Verifier
 
     def static_evaluate(context)
       result = @expression.static_evaluate(context)
-      fail(VerificationError, "Assertion does not hold") unless result
+      fail(AssertionError, "Assertion does not hold") unless result
     end
 
     def to_s
