@@ -25,6 +25,25 @@ RSpec.describe Verifier::BinaryOperatorExpression do
       end
     end
 
+    context "with the || operator and one false operand" do
+      let(:operator) { :"||" }
+      let(:first_operand) { bin_op(:>, variable("x"), constant(50)) }
+
+      it "is truthy" do
+        expect(expression.static_evaluate(context)).to be_truthy
+      end
+    end
+
+    context "with the || operator and two false operands" do
+      let(:operator) { :"||" }
+      let(:first_operand) { bin_op(:>, variable("x"), constant(50)) }
+      let(:second_operand) { first_operand }
+
+      it "is falsy" do
+        expect(expression.static_evaluate(context)).to be_falsy
+      end
+    end
+
     [:+, :-, :*, :/].each do |operator|
       context "using the arithmetic operator #{operator}" do
         let(:operator) { operator }
