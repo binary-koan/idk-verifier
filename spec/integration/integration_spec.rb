@@ -1,6 +1,12 @@
 require "spec_helper"
 
+Dir.entries(File.expand_path("../tests", __FILE__)).each do |file|
+  next if file =~ /^..?$/
+  require_relative "tests/#{file}"
+end
+
 # Dir.entries(File.expand_path("../scripts", __FILE__)).each do |script|
+#   next if script =~ /^..?$/
 #   RSpec.describe "#{script} test script" do
 #     let(:program) { Parser.parse_file(script) }
 #

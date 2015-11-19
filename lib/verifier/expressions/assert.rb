@@ -11,7 +11,7 @@ module Verifier
 
     def static_evaluate(context)
       result = @expression.static_evaluate(context)
-      fail(AssertionError, "Assertion does not hold") unless result
+      fail(AssertionError, "Assertion does not hold: #{self}") unless result
     end
 
     def to_s
