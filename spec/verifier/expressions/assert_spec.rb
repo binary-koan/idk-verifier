@@ -7,11 +7,7 @@ RSpec.describe Verifier::AssertExpression do
     let(:context) { { "x" => Verifier::DefiniteRange.new(0, 100) } }
 
     context "when asserting a variable is outside its range" do
-      let(:expression) do
-        expr(:Assert, expr(:BinaryOperator, :>,
-          expr(:Variable, "x"), expr(:Constant, 100)
-        ))
-      end
+      let(:expression) { assertion(bin_op(:>, variable("x"), constant(100))) }
 
       it "throws an assertion error" do
         expect { expression.static_evaluate(context) }.to raise_error Verifier::AssertionError
@@ -19,11 +15,7 @@ RSpec.describe Verifier::AssertExpression do
     end
 
     context "when asserting a variable is inside its range" do
-      let(:expression) do
-        expr(:Assert, expr(:BinaryOperator, :<,
-          expr(:Variable, "x"), expr(:Constant, 200)
-        ))
-      end
+      let(:expression) { assertion(bin_op(:<, variable("x"), constant(200))) }
 
       it "succeeds and returns nil" do
         expect(expression.static_evaluate(context)).to be_nil

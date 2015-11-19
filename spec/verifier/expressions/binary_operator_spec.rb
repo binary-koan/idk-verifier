@@ -5,10 +5,10 @@ RSpec.describe Verifier::BinaryOperatorExpression do
 
   describe "#static_evaluate" do
     let(:context) { { "x" => Verifier::DefiniteRange.new(0, 100) } }
-    let(:expression) { expr(:BinaryOperator, operator, first_operand, second_operand) }
+    let(:expression) { bin_op(operator, first_operand, second_operand) }
 
-    let(:first_operand) { expr(:Constant, 100) }
-    let(:second_operand) { expr(:Constant, 50) }
+    let(:first_operand) { constant(100) }
+    let(:second_operand) { constant(50) }
 
     context "with the && operator and true operands" do
       let(:operator) { :"&&" }
@@ -20,7 +20,7 @@ RSpec.describe Verifier::BinaryOperatorExpression do
 
     context "with the && operator and false operands" do
       let(:operator) { :"&&" }
-      let(:first_operand) { expr(:BinaryOperator, :<, expr(:Variable, "x"), expr(:Constant, 50)) }
+      let(:first_operand) { bin_op(:<, variable("x"), constant(50)) }
 
       it "is falsy" do
         expect(expression.static_evaluate(context)).to be_falsy
@@ -31,7 +31,7 @@ RSpec.describe Verifier::BinaryOperatorExpression do
       context "using the arithmetic operator #{operator}" do
         let(:operator) { operator }
         let(:mock_range) { instance_double(Verifier::DefiniteRange) }
-        let(:first_operand) { expr(:Constant, mock_range) }
+        let(:first_operand) { constant(mock_range) }
 
         it "passes the signal #{operator} to the result of the first operand" do
           expect(mock_range).to receive(operator).at_least(:once)

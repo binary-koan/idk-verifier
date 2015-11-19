@@ -7,9 +7,7 @@ RSpec.describe Verifier::AssignmentExpression do
     let(:context) { { "x" => Verifier::DefiniteRange.new(0, 100) } }
 
     context "when the variable does not exist in the context" do
-      let(:expression) do
-        expr(:Assignment, "y", expr(:Constant, 10))
-      end
+      let(:expression) { assignment("y", constant(10)) }
 
       it "adds the variable to the context" do
         expression.static_evaluate(context)
@@ -19,9 +17,7 @@ RSpec.describe Verifier::AssignmentExpression do
     end
 
     context "when the variable exists in the context" do
-      let(:expression) do
-        expr(:Assignment, "x", expr(:Constant, 10))
-      end
+      let(:expression) { assignment("x", constant(10)) }
 
       it "changes the variable in the context" do
         expression.static_evaluate(context)

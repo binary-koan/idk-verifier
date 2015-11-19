@@ -4,7 +4,7 @@ RSpec.describe Verifier::ConstantExpression do
   include_context "with expression builder"
 
   describe "#static_evaluate" do
-    let(:expression) { expr(:Constant, 100) }
+    let(:expression) { constant(100) }
 
     it "returns a definite range" do
       expect(expression.static_evaluate({})).to be_a(Verifier::DefiniteRange)

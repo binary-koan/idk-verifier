@@ -6,9 +6,9 @@ RSpec.describe Verifier::ExpectExpression do
   describe "#static_evaluate" do
     context "with a simple constraint on one variable" do
       let(:expression) do
-        expr(:Expect, ["x"], expr(:BinaryOperator, :"&&",
-          expr(:BinaryOperator, :>, expr(:Variable, "x"), expr(:Constant, 0)),
-          expr(:BinaryOperator, :<, expr(:Variable, "x"), expr(:Constant, 100))
+        expectation(["x"], bin_op(:"&&",
+          bin_op(:>, variable("x"), constant(0)),
+          bin_op(:<, variable("x"), constant(100))
         ))
       end
 

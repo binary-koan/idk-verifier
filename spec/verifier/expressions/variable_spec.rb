@@ -4,7 +4,7 @@ RSpec.describe Verifier::VariableExpression do
   include_context "with expression builder"
 
   describe "#static_evaluate" do
-    let(:expression) { expr(:Variable, "x") }
+    let(:expression) { variable("x") }
 
     it "fails if the variable is not in the context" do
       expect { expression.static_evaluate({}) }.to raise_error Verifier::UndefinedVariableError
