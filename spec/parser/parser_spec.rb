@@ -1,10 +1,10 @@
 
 require_relative '../../lib/parser/parser'
 
-describe Parser do
+describe Verifier::Parser do
 
   def parse_expression(msg)
-    Parser.new(msg.chars.each).parse_expression
+    Verifier::Parser.new(msg.chars.each).parse_expression
   end
 
   def unary(sym, inner)

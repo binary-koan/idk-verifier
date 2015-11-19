@@ -1,10 +1,10 @@
 
 require_relative '../../lib/parser/token'
 
-describe Token do
+describe Verifier::Token do
 
   context "is a string" do
-    let(:token) { Token.string("hello world") }
+    let(:token) { Verifier::Token.string("hello world") }
 
     it "is recognized as a string" do
       expect(token.is_string?).to eq true
@@ -16,7 +16,7 @@ describe Token do
   end
 
   context "is an integer" do
-    let(:token) { Token.integer(1234) }
+    let(:token) { Verifier::Token.integer(1234) }
 
     it "is recognized as an integer" do
       expect(token.is_integer?).to eq true
@@ -28,7 +28,7 @@ describe Token do
   end
 
   context "is a symbol" do
-    let(:token) { Token.symbol('<') }
+    let(:token) { Verifier::Token.symbol('<') }
 
     it "is recognized as a symbol" do
       expect(token.is_symbol?).to eq true
@@ -40,10 +40,10 @@ describe Token do
   end
 end
 
-describe Tokenizer do
+describe Verifier::Tokenizer do
 
   def tokenizer(input)
-    Tokenizer.new(input.chars.each)
+    Verifier::Tokenizer.new(input.chars.each)
   end
 
   def tokenize(input)
@@ -58,39 +58,39 @@ describe Tokenizer do
   context "tokenizing a string" do
 
     it "reads an arbitrary string correctly" do
-      expect_token('"abcd"', Token.string('abcd'))
+      expect_token('"abcd"', Verifier::Token.string('abcd'))
     end
 
     it "reads an empty string correctly" do
-      expect_token('""', Token.string(''))
+      expect_token('""', Verifier::Token.string(''))
     end
   end
 
   context "tokenizing an integer" do
 
     it "reads an arbitrary integer correctly" do
-      expect_token('1234', Token.integer(1234))
+      expect_token('1234', Verifier::Token.integer(1234))
     end
   end
 
   context "tokenizing a word" do
     it "reads the 'assert' word correctly" do
-      expect_token('assert', Token.word('assert'))
+      expect_token('assert', Verifier::Token.word('assert'))
     end
   end
 
   context "tokenizing a symbol" do
 
     it "reads an add symbol" do
-      expect_token('+', Token.symbol('+'))
+      expect_token('+', Verifier::Token.symbol('+'))
     end
 
     it "reads an addition assignment" do
-      expect_token('+=', Token.symbol('+='))
+      expect_token('+=', Verifier::Token.symbol('+='))
     end
 
     it "does not accept a symbol which doesn't support assignment" do
-      expect_token('!=', Token.symbol('!'))
+      expect_token('!=', Verifier::Token.symbol('!'))
     end
   end
 

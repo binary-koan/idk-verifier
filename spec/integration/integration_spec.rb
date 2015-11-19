@@ -9,7 +9,7 @@ SCRIPTS_DIR = File.expand_path("../scripts", __FILE__)
 Dir.entries(SCRIPTS_DIR).each do |script|
   next if script =~ /^..?$/
   RSpec.describe "#{script} test script" do
-    let(:program) { Parser.parse_file("#{SCRIPTS_DIR}/#{script}") }
+    let(:program) { Verifier::Parser.parse_file("#{SCRIPTS_DIR}/#{script}") }
 
     it "parses correctly" do
       expect(program).to be_a Verifier::Scope
