@@ -5,6 +5,8 @@ module Verifier
   class AssertExpression
     include Expression
 
+    attr_reader :expression
+
     def initialize(expression)
       @expression = expression
     end
@@ -16,6 +18,14 @@ module Verifier
 
     def to_s
       "assert #{@expression}"
+    end
+
+    def ==(other)
+      if other.is_a?(AssertExpression)
+        @expression == other.expression
+      else
+        false
+      end
     end
   end
 end

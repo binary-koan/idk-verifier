@@ -2,6 +2,8 @@ module Verifier
   class AssignmentExpression
     include Expression
 
+    attr_reader :name, :expression
+
     def initialize(name, expression)
       @name = name
       @expression = expression
@@ -13,6 +15,13 @@ module Verifier
 
     def to_s
       "#{@name} = #{@expression}"
+    end
+
+    def ==(other)
+      if other.is_a?(AssignmentExpression)
+        @name == other.name
+        @expression == other.expression
+      end
     end
   end
 end
