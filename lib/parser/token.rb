@@ -11,13 +11,13 @@ class Characters
       return @buffer.pop
     end
 
-    @characters.next
+    @characters.next rescue nil
   end
 
   def eat_whitespace
-    c = @characters.next
+    c = self.next
     while c.strip.empty?
-      c = @characters.next
+      c = self.next
     end
     feed(c)
   end
@@ -181,13 +181,13 @@ class Tokenizer
     chars = []
 
     loop do
-      c = @characters.peek
+      c = @characters.next
 
       if block.call(c)
+        @characters.feed(c)
         break
       else
         chars << c
-        @characters.eat
       end
     end
 

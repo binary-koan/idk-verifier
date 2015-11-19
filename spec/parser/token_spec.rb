@@ -96,24 +96,25 @@ describe Tokenizer do
 
   context "tokenizing a binary operator" do
 
-    # it "reads the things correctly" do
-    #   tokenizer = tokenizer("123+=abc")
-    #   expect(tokenizer.next).to eq 123
-    #   expect(tokenizer.next).to eq '+'
-    # end
+    it "reads the things correctly" do
+      tokenizer = tokenizer("123 + abc")
+      expect(tokenizer.next).to eq 123
+      expect(tokenizer.next).to eq '+'
+    end
   end
 
   describe "#peek" do
-    # it "doesn't change the value of 'next'" do
-    #   tokenizer = tokenizer("abc def")
-    #   expect(tokenizer.next).to eq 'abc'
-    #   expect(tokenizer.peek).to eq 'def'
-    # end
+    it "doesn't change the value of 'next'" do
+      tokenizer = tokenizer("abc def")
+      expect(tokenizer.next).to eq 'abc'
+      expect(tokenizer.peek).to eq 'def'
+    end
   end
 
-  it "does something" do
-    tokenizer = tokenizer("abc def")
+  it "can tokenize more than one token in a row" do
+    tokenizer = tokenizer("abc+def")
     expect(tokenizer.next).to eq "abc"
+    expect(tokenizer.next).to eq "+"
     expect(tokenizer.next).to eq "def"
   end
 end
