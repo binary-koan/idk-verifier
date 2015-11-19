@@ -11,11 +11,19 @@ describe Parser do
     Verifier::BinaryOperatorExpression.new(sym, lhs, rhs)
   end
 
+  def variable(name)
+    Verifier::VariableExpression.new(name)
+  end
+
+  def constant(value)
+    Verifier::ConstantExpression.new(value)
+  end
+
   context "when parsing an add expression" do
 
     it "parses addition" do
       expr = parse_expression("123+abc")
-      expect(expr).to eq binop(:+, 123, 'abc')
+      expect(expr).to eq binop(:+, constant(123), variable('abc'))
     end
   end
 

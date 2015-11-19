@@ -27,6 +27,12 @@ module Verifier
     def to_s
       "#{@lhs} #{@operator} #{@rhs}"
     end
+
+    def ==(other)
+      (@operator == other.operator) &&
+      (@lhs == other.lhs) &&
+      (@rhs == other.rhs)
+    end
   end
 
   # Strategies for evaluating the expression

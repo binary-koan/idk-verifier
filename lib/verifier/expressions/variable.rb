@@ -15,5 +15,9 @@ module Verifier
     def to_s
       @name
     end
+
+    def ==(other)
+      @name == other.name
+    end
   end
 end
