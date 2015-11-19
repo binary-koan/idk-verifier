@@ -69,7 +69,7 @@ class Parser
     first_token = @tokenizer.next
 
     if first_token.is_word?
-      VariableExpression.new(first_token.value)
+      Verifier::VariableExpression.new(first_token.value)
     elsif first_token.is_string?
       fail # we don't support strings yet
     elsif first_token.is_integer?
