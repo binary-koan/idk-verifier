@@ -92,6 +92,10 @@ class Parser
   end
 
   def parse_word_expression(first_word)
+    if @tokenizer.peek == '='
+      return parse_assignment_expression(first_word)
+    end
+
     case first_word.value
     when 'expect' then parse_expect_expression
     else
@@ -104,6 +108,12 @@ class Parser
     expect(Token.word('where'))
     expr = parse_expression
     Verifier::ExpectExpression.new(variables, expr)
+  end
+
+  def parse_assignment_expression(variable)
+    assert_token(Token.symbol('='))
+    expr = parse_expression
+    Verifier::AssignmentExpression.new(variable.value, expr)
   end
 
   def parse_word_list
@@ -157,6 +167,13 @@ class Parser
     token = @tokenizer.next
     fail if token != value
     token
+  end
+
+  # TODO: Use 'assert_token' for internal assertions and use
+  # 'expect' for errors which should be shown to the user.
+  # assert_token should fail but expect should raise
+  def assert_token(value)
+    expect(value)
   end
 
   def expect_type(type)
