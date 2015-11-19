@@ -63,10 +63,13 @@ class Parser
 
     parse_binop_rhs(lhs, 0) if lhs
   end
+
   private
 
   def parse_primary_expression
     first_token = @tokenizer.next
+
+    return nil if first_token.nil?
 
     if first_token.is_word?
       Verifier::VariableExpression.new(first_token.value)
@@ -74,10 +77,18 @@ class Parser
       fail # we don't support strings yet
     elsif first_token.is_integer?
       Verifier::ConstantExpression.new(first_token.value)
+    elsif first_token == '('
+      parse_parenthesized_expression
     else
       fail
     end
 
+  end
+
+  def parse_parenthesized_expression
+    inner = parse_expression
+    expect(')')
+    inner
   end
 
   def parse_binop_rhs(lhs, min_precedence)
@@ -97,5 +108,10 @@ class Parser
       lhs = Verifier::BinaryOperatorExpression.new(BINARY_OPERATORS[op.value][:sym], lhs, rhs)
     end
     lhs
+  end
+
+  def expect(value)
+    token = @tokenizer.next
+    fail if token != value
   end
 end

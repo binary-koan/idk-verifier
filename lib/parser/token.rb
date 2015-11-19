@@ -157,7 +157,8 @@ class Tokenizer
     # Tokens which may also assign (+=, *=, etc)
     when '+', '-',
          '*', '/',
-         '='
+         '=', '(',
+         ')'
       next_symbol_maybe_assign(first_char)
     # Tokens with a single character
     when '!'
