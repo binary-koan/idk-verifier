@@ -6,24 +6,24 @@ require_relative '../verifier/expression'
 
 # Unary operators which prefix things
 PREFIX_UNARY_OPERATORS = {
-  '!' => { :precedence => 10, :sym => :not }, # Logical not
+  '!' => { :precedence => 10, :sym => :! }, # Logical not
 }
 
 POSTFIX_UNARY_OPERATORS = {
-  '!' => { :precedence => 10, :sym => :fac }, # Factorial
+  '!' => { :precedence => 10, :sym => :! }, # Factorial
 }
 
 BINARY_OPERATORS = {
   # Arithmetic
-  '+' => { :precedence => 10, :sym => :add }, # Addition
-  '-' => { :precedence => 10, :sym => :sub }, # Subtraction
-  '*' => { :precedence => 10, :sym => :mul }, # Multiplication
-  '/' => { :precedence => 10, :sym => :div }, # Division
-  '^' => { :precedence => 10, :sym => :pow }, # Power
+  '+' => { :precedence => 10, :sym => :+ }, # Addition
+  '-' => { :precedence => 10, :sym => :- }, # Subtraction
+  '*' => { :precedence => 10, :sym => :* }, # Multiplication
+  '/' => { :precedence => 10, :sym => :/ }, # Division
+  '^' => { :precedence => 10, :sym => :^ }, # Power
 
   # Logical
-  '&&' => { :precedence => 10, :sym => :and }, # And
-  '||' => { :precedence => 10, :sym => :or  }, # Or
+  '&&' => { :precedence => 10, :sym => :"&&" }, # And
+  '||' => { :precedence => 10, :sym => :"||" }, # Or
 }
 
 def is_binop(op)
@@ -83,7 +83,6 @@ class Parser
   def parse_binop_rhs(lhs, min_precedence)
     lookahead = @tokenizer.peek
 
-    puts "#{lookahead.is_symbol?}"
     while precedence_binop(lookahead) >= min_precedence do
 
       op = lookahead
