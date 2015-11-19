@@ -103,4 +103,10 @@ describe Parser do
     expect(expr).to eq Verifier::ExpectExpression.new('a',
                           binop(:>, variable('a'), constant(0)))
   end
+
+  it "parses an assertion" do
+    expr = parse_expression("assert a >= 0")
+    expect(expr).to eq Verifier::AssertExpression.new(
+                          binop(:>=, variable('a'), constant(0)))
+  end
 end

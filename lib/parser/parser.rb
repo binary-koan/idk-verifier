@@ -1,6 +1,7 @@
 
 require_relative 'token'
 require_relative '../verifier/expression'
+require_relative '../verifier/scope'
 
 # TODO: Properly set the precedences.
 
@@ -113,6 +114,7 @@ class Parser
 
     case first_word.value
     when 'expect' then parse_expect_expression
+    when 'assert' then parse_assertion
     else
       Verifier::VariableExpression.new(first_word.value)
     end
@@ -129,6 +131,11 @@ class Parser
     expect(Token.word('where'))
     expr = parse_expression
     Verifier::ExpectExpression.new(variables, expr)
+  end
+
+  def parse_assertion
+    condition = parse_expression
+    Verifier::AssertExpression.new(condition)
   end
 
   def parse_assignment_expression(variable)
