@@ -1,11 +1,11 @@
 require "spec_helper"
 
-RSpec.describe Verifier::ValueRange do
+RSpec.describe Verifier::DefiniteRange do
   let(:range1) { 0..100 }
   let(:range2) { 0..100 }
 
-  let(:value_range1) { Verifier::ValueRange.new(range1.begin, range1.end) }
-  let(:value_range2) { Verifier::ValueRange.new(range2.end, range2.begin) }
+  let(:value_range1) { Verifier::DefiniteRange.new(range1.begin, range1.end) }
+  let(:value_range2) { Verifier::DefiniteRange.new(range2.end, range2.begin) }
 
   describe "#==" do
     subject { value_range1 == value_range2 }

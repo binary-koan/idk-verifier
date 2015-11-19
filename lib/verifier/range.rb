@@ -1,16 +1,21 @@
 module Verifier
   class ValueRange
-    include Enumerable
+  end
 
+  class UnionRange < ValueRange
+    def initialize(*ranges)
+      @ranges = ranges
+    end
+
+    # ...
+  end
+
+  class DefiniteRange < ValueRange
     attr_reader :upper
     attr_reader :lower
 
     def initialize(first_end, second_end)
       @lower, @upper = [first_end, second_end].minmax
-    end
-
-    def each
-      (upper..lower).each { |i| yield i }
     end
 
     def range
@@ -24,7 +29,7 @@ module Verifier
     end
 
     def <=(other)
-      if other.is_a?(ValueRange)
+      if other.is_a?(DefiniteRange)
         upper <= other.lower
       else
         upper <= other
@@ -36,7 +41,7 @@ module Verifier
     end
 
     def >=(other)
-      if other.is_a?(ValueRange)
+      if other.is_a?(DefiniteRange)
         lower >= other.upper
       else
         lower >= other
@@ -44,7 +49,7 @@ module Verifier
     end
 
     def ==(other)
-      if other.is_a?(ValueRange)
+      if other.is_a?(DefiniteRange)
         range == 0 && other.range == 0 && lower == other.lower
       else
         range == 0 && lower == other
@@ -63,16 +68,16 @@ module Verifier
 
     def -@
       # This is probably wrong ...
-      ValueRange.new(-lower, -upper)
+      DefiniteRange.new(-lower, -upper)
     end
 
     [:+, :-, :*, :/].each do |operator|
       define_method(operator) do |other|
-        if other.is_a?(ValueRange)
+        if other.is_a?(DefiniteRange)
           # Inefficient but effective
-          ValueRange.new(*calculated_combinations(operator, other).minmax)
+          DefiniteRange.new(*calculated_combinations(operator, other).minmax)
         else
-          ValueRange.new(lower.send(operator, other), upper.send(operator, other))
+          DefiniteRange.new(lower.send(operator, other), upper.send(operator, other))
         end
       end
     end
@@ -80,7 +85,7 @@ module Verifier
     # Utilities
 
     def to_s
-      "<ValueRange #{lower}..#{upper}>"
+      "#{lower}..#{upper}"
     end
 
     def to_range
