@@ -160,8 +160,10 @@ class Tokenizer
          '=', '(',
          ')'
       next_symbol_maybe_assign(first_char)
+    when '&', '|'
+      next_symbol_maybe_repeated(first_char)
     # Tokens with a single character
-    when '!'
+    when '!', '^'
       Token.symbol(first_char)
     end
   end
@@ -171,6 +173,16 @@ class Tokenizer
     Token.symbol(if (@characters.peek rescue nil) == '='
       expect_character('=')
       "#{first_char}="
+    else
+      first_char
+    end)
+  end
+
+  # The next symbol may be repeated (&&, ||, etc)
+  def next_symbol_maybe_repeated(first_char)
+    Token.symbol(if (@characters.peek rescue nil) == first_char
+      expect_character(first_char)
+      "#{first_char}#{first_char}"
     else
       first_char
     end)

@@ -94,6 +94,10 @@ class Parser
   def parse_binop_rhs(lhs, min_precedence)
     lookahead = @tokenizer.peek
 
+    # I keep accidentally returning strings from the tokenizer
+    # so we make sure tokens are being returned here.
+    fail if !lookahead.nil? && !lookahead.is_a?(Token)
+
     while precedence_binop(lookahead) >= min_precedence do
 
       op = lookahead

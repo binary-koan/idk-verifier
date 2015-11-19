@@ -41,20 +41,20 @@ describe Parser do
       expect(expr).to eq binop(:/, constant(1), constant(1))
     end
 
-    # it "parses exponentials" do
-    #   expr = parse_expression("5^2")
-    #   expect(expr).to eq binop(:^, constant(5), constant(2))
-    # end
+    it "parses exponentials" do
+      expr = parse_expression("5^2")
+      expect(expr).to eq binop(:^, constant(5), constant(2))
+    end
 
-    # it "parses logical AND" do
-    #   expr = parse_expression("a&&true")
-    #   expect(expr).to eq binop(:"&&", variable('a'), variable('true'))
-    # end
+    it "parses logical AND" do
+      expr = parse_expression("a&&true")
+      expect(expr).to eq binop(:"&&", variable('a'), variable('true'))
+    end
 
-    # it "parses logical OR" do
-    #   expr = parse_expression("1 || false")
-    #   expect(expr).to eq binop(:"||", constant(1), variable('false'))
-    # end
+    it "parses logical OR" do
+      expr = parse_expression("1 || false")
+      expect(expr).to eq binop(:"||", constant(1), variable('false'))
+    end
   end
 
   it "parses parenthesized expressions" do
