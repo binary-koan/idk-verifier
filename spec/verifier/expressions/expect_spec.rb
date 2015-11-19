@@ -1,8 +1,6 @@
 require "spec_helper"
 
 RSpec.describe Verifier::ExpectExpression do
-  include_context "with expression builder"
-
   describe "#static_evaluate" do
     context "with a simple constraint on one variable" do
       let(:expression) do
@@ -15,7 +13,7 @@ RSpec.describe Verifier::ExpectExpression do
       it "sets up a variable range in locals" do
         locals = Verifier::ScopeContext.new
         expression.static_evaluate(locals)
-        expect(locals["x"]).to eq Verifier::DefiniteRange.new(1, 99)
+        expect(locals["x"]).to eq value_range(lower: 1, upper: 99)
       end
     end
   end

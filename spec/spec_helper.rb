@@ -2,7 +2,8 @@ require_relative "../lib/verifier/expression"
 require_relative "../lib/verifier/range"
 require_relative "../lib/verifier/scope"
 
-RSpec.shared_context "with expression builder" do
+RSpec.configure do
+  # Expression builders
   def expectation(names, expr)
     Verifier::ExpectExpression.new(names, expr)
   end
@@ -25,5 +26,10 @@ RSpec.shared_context "with expression builder" do
 
   def constant(value)
     Verifier::ConstantExpression.new(value)
+  end
+
+  # Value builders
+  def value_range(**kwargs)
+    Verifier::ValueRange.new(**kwargs)
   end
 end

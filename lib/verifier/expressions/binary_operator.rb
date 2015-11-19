@@ -95,15 +95,15 @@ module Verifier
       value = rhs.static_evaluate(context)
       bounds = case operator
       when :<
-        IndefiniteRange.new(upper: value.lower - 1)
+        ValueRange.new(upper: value.lower - 1)
       when :<=
-        IndefiniteRange.new(upper: value.lower)
+        ValueRange.new(upper: value.lower)
       when :==
-        DefiniteRange.new(value.lower, value.upper)
+        ValueRange.new(lower: value.lower, upper: value.upper)
       when :>=
-        IndefiniteRange.new(lower: value.upper)
+        ValueRange.new(lower: value.upper)
       when :>
-        IndefiniteRange.new(lower: value.upper + 1)
+        ValueRange.new(lower: value.upper + 1)
       end
 
       { lhs.name => bounds }

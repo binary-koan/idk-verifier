@@ -1,10 +1,8 @@
 require "spec_helper"
 
 RSpec.describe Verifier::AssertExpression do
-  include_context "with expression builder"
-
   describe "#static_evaluate" do
-    let(:context) { { "x" => Verifier::DefiniteRange.new(0, 100) } }
+    let(:context) { { "x" => value_range(lower: 0, upper: 100) } }
 
     context "when asserting a variable is outside its range" do
       let(:expression) { assertion(bin_op(:>, variable("x"), constant(100))) }

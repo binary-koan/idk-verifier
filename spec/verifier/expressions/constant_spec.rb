@@ -1,13 +1,11 @@
 require "spec_helper"
 
 RSpec.describe Verifier::ConstantExpression do
-  include_context "with expression builder"
-
   describe "#static_evaluate" do
     let(:expression) { constant(100) }
 
     it "returns a definite range" do
-      expect(expression.static_evaluate({})).to be_a(Verifier::DefiniteRange)
+      expect(expression.static_evaluate({})).to be_a(Verifier::ValueRange)
     end
 
     it "has identical upper and lower bounds" do

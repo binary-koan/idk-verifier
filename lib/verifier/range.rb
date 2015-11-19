@@ -1,8 +1,5 @@
 module Verifier
-  class ValueRange
-  end
-
-  class UnionRange < ValueRange
+  class UnionRange
     def initialize(*ranges)
       @ranges = ranges
     end
@@ -10,46 +7,23 @@ module Verifier
     # ...
   end
 
-  class IndefiniteRange < ValueRange
+  class ValueRange
     attr_reader :upper
     attr_reader :lower
 
-    def initialize(upper: nil, lower: nil)
+    def initialize(upper: Float::INFINITY, lower: -Float::INFINITY)
       @upper = upper
       @lower = lower
     end
 
     def constrain(other)
-      if upper && other.upper
-        new_upper = [upper, other.upper].max
-      else
-        new_upper = upper || other.upper
-      end
-
-      if lower && other.lower
-        new_lower = [lower, other.lower].min
-      else
-        new_lower = lower || other.lower
-      end
-
-      if new_upper && new_lower
-        DefiniteRange.new(new_upper, new_lower)
-      else
-        IndefiniteRange.new(upper: new_upper, lower: new_lower)
-      end
-    end
-  end
-
-  class DefiniteRange < ValueRange
-    attr_reader :upper
-    attr_reader :lower
-
-    def initialize(first_end, second_end)
-      @lower, @upper = [first_end, second_end].minmax
+      new_upper = [upper, other.upper].min
+      new_lower = [lower, other.lower].max
+      ValueRange.new(upper: new_upper, lower: new_lower)
     end
 
     def range
-      upper - lower
+      upper - lower if upper && lower
     end
 
     # Comparisons
@@ -59,7 +33,7 @@ module Verifier
     end
 
     def <=(other)
-      if other.is_a?(DefiniteRange)
+      if other.is_a?(ValueRange)
         upper <= other.lower
       else
         upper <= other
@@ -71,7 +45,7 @@ module Verifier
     end
 
     def >=(other)
-      if other.is_a?(DefiniteRange)
+      if other.is_a?(ValueRange)
         lower >= other.upper
       else
         lower >= other
@@ -79,7 +53,7 @@ module Verifier
     end
 
     def ==(other)
-      if other.is_a?(DefiniteRange)
+      if other.is_a?(ValueRange)
         lower == other.lower && upper == other.upper
       else
         range == 0 && lower == other
@@ -102,16 +76,19 @@ module Verifier
 
     def -@
       # This is probably wrong ...
-      DefiniteRange.new(-lower, -upper)
+      ValueRange.new(-lower, -upper)
     end
 
     [:+, :-, :*, :/].each do |operator|
       define_method(operator) do |other|
-        if other.is_a?(DefiniteRange)
+        if other.is_a?(ValueRange)
           # Inefficient but effective
-          DefiniteRange.new(*calculated_combinations(operator, other).minmax)
+          minmax = calculated_combinations(operator, other).minmax
+          ValueRange.new(lower: minmax[0], upper: minmax[1])
         else
-          DefiniteRange.new(lower.send(operator, other), upper.send(operator, other))
+          ValueRange.new(
+            lower: lower.send(operator, other), upper: upper.send(operator, other)
+          )
         end
       end
     end

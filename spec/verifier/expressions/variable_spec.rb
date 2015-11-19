@@ -1,8 +1,6 @@
 require "spec_helper"
 
 RSpec.describe Verifier::VariableExpression do
-  include_context "with expression builder"
-
   describe "#static_evaluate" do
     let(:expression) { variable("x") }
 

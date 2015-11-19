@@ -1,10 +1,8 @@
 require "spec_helper"
 
 RSpec.describe Verifier::BinaryOperatorExpression do
-  include_context "with expression builder"
-
   describe "#static_evaluate" do
-    let(:context) { { "x" => Verifier::DefiniteRange.new(0, 100) } }
+    let(:context) { { "x" => value_range(lower: 0, upper: 100) } }
     let(:expression) { bin_op(operator, first_operand, second_operand) }
 
     let(:first_operand) { constant(100) }
@@ -30,7 +28,7 @@ RSpec.describe Verifier::BinaryOperatorExpression do
     [:+, :-, :*, :/].each do |operator|
       context "using the arithmetic operator #{operator}" do
         let(:operator) { operator }
-        let(:mock_range) { instance_double(Verifier::DefiniteRange) }
+        let(:mock_range) { instance_double(Verifier::ValueRange) }
         let(:first_operand) { constant(mock_range) }
 
         it "passes the signal #{operator} to the result of the first operand" do
