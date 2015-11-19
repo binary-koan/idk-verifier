@@ -8,6 +8,10 @@ module Verifier
     def static_evaluate(locals)
       # What to do here?
     end
+
+    def to_s
+      "expect #{@names.join(', ')} where #{@expression}"
+    end
   end
 
   class AssertExpression
@@ -19,6 +23,10 @@ module Verifier
       result = @expression.static_evaluate(locals)
       fail(VerificationError, "Assertion does not hold") unless result
     end
+
+    def to_s
+      "assert #{@expression}"
+    end
   end
 
   class AssignmentExpression
@@ -29,6 +37,10 @@ module Verifier
 
     def static_evaluate(locals)
       locals[@name] = @expression.static_evaluate(locals)
+    end
+
+    def to_s
+      "#{@name} = #{@expression}"
     end
   end
 
@@ -48,6 +60,10 @@ module Verifier
       # ...
       end
     end
+
+    def to_s
+      "#{@lhs} #{@operator} #{@rhs}"
+    end
   end
 
   class UnaryOperatorExpression
@@ -59,6 +75,11 @@ module Verifier
     def static_evaluate(locals)
       # ...
     end
+
+    def to_s
+      # TODO: How to we handle factorial? It needs to be printed at the end.
+      "#{@operator}#{@expression}"
+    end
   end
 
   class VariableExpression
@@ -69,6 +90,10 @@ module Verifier
     def static_evaluate(locals)
       locals[@name]
     end
+
+    def to_s
+      @name
+    end
   end
 
   class ConstantExpression
@@ -78,6 +103,10 @@ module Verifier
 
     def static_evaluate(locals)
       value
+    end
+
+    def to_s
+      @value.to_s
     end
   end
 end
