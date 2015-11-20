@@ -117,4 +117,10 @@ describe Verifier::Tokenizer do
     expect(tokenizer.next).to eq "+"
     expect(tokenizer.next).to eq "def"
   end
+
+  it "ignores comments on their own line" do
+    tokenizer = tokenizer("abc # 123\n 987")
+    expect(tokenizer.next).to eq 'abc'
+    expect(tokenizer.next).to eq 987
+  end
 end

@@ -115,6 +115,14 @@ module Verifier
       end
 
       @characters.eat_whitespace
+
+      if @characters.peek == '#'
+        while @characters.peek != "\n"
+          @characters.eat
+        end
+        @characters.eat_whitespace
+      end
+
       first_char = @characters.peek
 
       if first_char == '"'
