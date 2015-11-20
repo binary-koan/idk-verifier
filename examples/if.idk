@@ -1,0 +1,10 @@
+
+expect a where a > 0, a < 10
+
+if a == 20 {
+    a = 5
+} else {
+    a = 100
+}
+
+assert a==100
