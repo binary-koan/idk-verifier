@@ -1,10 +1,5 @@
+expect x where x > 200 || x < 100 || (x >= 50 && x <= 75)
+expect y where y >= 0 && y <= 100
 
-expect x, y where x != y
-
-if x > y
-  max = x
-else
-  max = y
-
-assert max >= x && max >= y && (max == x || max == y)
-
+a = x + y + 10
+b = -a

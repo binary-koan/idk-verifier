@@ -1,8 +1,4 @@
-
-expect n where n > 0
-
-while n > 1
-    n = n - 1
-    factorial = factorial * n
-
-assert factorial >= n
+expect x where x >= 0 && x <= 100
+y = x * 2 + 100
+assert x >= 0 && x <= 100 && x > (-1) && x < 101
+assert y >= 100 && y <= 300

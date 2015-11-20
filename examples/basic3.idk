@@ -1,3 +1,0 @@
-
-expect x where x > 0
-assert x >= 1
