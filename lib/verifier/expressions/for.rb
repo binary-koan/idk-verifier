@@ -9,8 +9,8 @@ module Verifier
 
     attr_reader :begin, :end, :step, :body
 
-    def new(begin_expr, end_cond,
-            step, body)
+    def initialize(begin_expr, end_cond,
+                   step, body)
       @begin = begin_expr
       @end = end_cond
       @step = step

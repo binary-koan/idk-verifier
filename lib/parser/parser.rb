@@ -118,6 +118,7 @@ module Verifier
 
       case first_word.value
       when 'if' then parse_if
+      when 'for' then parse_for
       when 'while' then parse_while
       when 'expect' then parse_expect_expression
       when 'assert' then parse_assertion
@@ -163,6 +164,22 @@ module Verifier
         block = parse_block
         IfBranch.else(block)
       end
+    end
+
+    def parse_for
+      expect(Token.symbol('('))
+
+      begin_expr = parse_expression
+      expect(Token.symbol(';'))
+      end_expr = parse_expression
+      expect(Token.symbol(';'))
+      step_expr = parse_expression
+
+      expect(Token.symbol(')'))
+      body = parse_block
+
+      ForExpression.new(begin_expr, end_expr,
+                        step_expr, body)
     end
 
     def parse_while

@@ -47,6 +47,12 @@ describe Verifier::Parser do
     Verifier::IfExpression.new(branches)
   end
 
+  def for_expr(begin_expr, end_expr,
+               step_expr, body)
+    Verifier::ForExpression.new(begin_expr, end_expr,
+                                step_expr, body)
+  end
+
   def while_expr(cond, body)
     Verifier::WhileExpression.new(cond, body)
   end
@@ -174,6 +180,18 @@ describe Verifier::Parser do
             variable('a'), [ constant(1) ],
             variable('b'), [ constant(2) ],
             [ constant(3) ])
+    end
+  end
+
+  context "for blocks" do
+    it "parses a trivial for block" do
+      expr = parse_expression("for(a=1; a<10; 1) { 987 }")
+      expect(expr).to eq for_expr(
+        assignment('a', constant(1)),
+        binop(:<, variable('a'), constant(10)),
+        constant(1),
+        [ constant(987) ])
+
     end
   end
 
