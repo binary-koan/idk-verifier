@@ -17,6 +17,10 @@ module Verifier
       end
     end
 
+    def can_happen?(context)
+      @evaluation_strategy.can_happen?(context)
+    end
+
     def static_evaluate(context)
       @evaluation_strategy.static_evaluate(context)
     rescue => e
@@ -98,6 +102,19 @@ module Verifier
   end
 
   class ComparisonOperatorStrategy < BinaryOperatorStrategy
+    def can_happen?(context)
+      return true unless lhs.is_a?(VariableExpression)
+
+      value = rhs.static_evaluate(context)
+      case operator
+      when :==
+        context[lhs.name] == value
+      else
+        true
+      # ...TODO
+      end
+    end
+
     def static_evaluate(context)
       if operator == :==
         lhs_value, rhs_value = operand_values(context)

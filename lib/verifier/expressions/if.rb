@@ -60,12 +60,18 @@ module Verifier
       inverse_constraints = {}
       constraints.each { |name, value| inverse_constraints[name] = value.inverse }
 
-      true_context = context.merge(constraints)
-      true_expressions.each { |expr| expr.static_evaluate(true_context) }
       false_context = context.merge(inverse_constraints)
       false_expressions.each { |expr| expr.static_evaluate(false_context) }
 
-      context.merge!(Scope.unite_constraints(true_context, false_context))
+      #TODO: What if it can never happen?
+      if expression.can_happen?(context)
+        true_context = context.merge(constraints)
+        true_expressions.each { |expr| expr.static_evaluate(true_context) }
+
+        context.merge!(Scope.unite_constraints(true_context, false_context))
+      else
+        context.merge!(false_context)
+      end
     end
 
     def ==(other)
@@ -77,6 +83,7 @@ module Verifier
     end
 
     def to_s(context={})
+      # Argh! The duplication!
       expression = branches.first.condition
       true_expressions = branches[0].body
       false_expressions = branches[1].body
@@ -86,16 +93,25 @@ module Verifier
       constraints.each { |name, value| inverse_constraints[name] = value.inverse }
 
       result = "if #{@branches[0].condition} {\n"
-      true_context = context.merge(constraints)
-      true_expressions.each { |expr| result += statement_to_string(expr, true_context) }
 
-      result += known_variable_info(true_context)
+      if expression.can_happen?(context)
+        true_context = context.merge(constraints)
+        true_expressions.each { |expr| result += statement_to_string(expr, true_context) }
+        result += known_variable_info(true_context)
+      else
+        result += "# can never happen!\n"
+      end
+
       result += "}\nelse {\n"
 
       false_context = context.merge(inverse_constraints)
       false_expressions.each { |expr| result += statement_to_string(expr, false_context) }
 
-      context.merge!(Scope.unite_constraints(true_context, false_context))
+      if expression.can_happen?(context)
+        context.merge!(Scope.unite_constraints(true_context, false_context))
+      else
+        context.merge!(false_context)
+      end
 
       result + known_variable_info(false_context) + "}"
     end
