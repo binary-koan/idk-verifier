@@ -89,8 +89,8 @@ describe Verifier::Tokenizer do
       expect_token('+=', Verifier::Token.symbol('+='))
     end
 
-    it "does not accept a symbol which doesn't support assignment" do
-      expect_token('!=', Verifier::Token.symbol('!'))
+    it "reads a not equals comparison" do
+      expect_token('!=', Verifier::Token.symbol('!='))
     end
   end
 

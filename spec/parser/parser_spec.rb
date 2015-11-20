@@ -54,26 +54,39 @@ describe Verifier::Parser do
       expect(expr).to eq binop(:^, constant(5), constant(2))
     end
 
-    it "parses logical AND" do
-      expr = parse_expression("a&&true")
-      expect(expr).to eq binop(:"&&", variable('a'), variable('true'))
-    end
+    context "comparisons" do
 
-    it "parses logical OR" do
-      expr = parse_expression("1 || false")
-      expect(expr).to eq binop(:"||", constant(1), variable('false'))
-    end
+      it "parses logical AND" do
+        expr = parse_expression("a&&true")
+        expect(expr).to eq binop(:"&&", variable('a'), variable('true'))
+      end
 
-    it "knows that multiplication has a higher precedence than addition" do
-      expr = parse_expression("1 + 2 * 2")
-      inner = binop(:*, constant(2), constant(2))
-      expect(expr).to eq binop(:+, constant(1), inner)
-    end
+      it "parses logical OR" do
+        expr = parse_expression("1 || false")
+        expect(expr).to eq binop(:"||", constant(1), variable('false'))
+      end
 
-    it "knows that AND has a higher precedence than OR" do
-      expr = parse_expression("A && B || C")
-      inner = binop(:"&&", variable('A'), variable('B'))
-      expect(expr).to eq binop(:"||", inner, variable('C'))
+      it "knows that multiplication has a higher precedence than addition" do
+        expr = parse_expression("1 + 2 * 2")
+        inner = binop(:*, constant(2), constant(2))
+        expect(expr).to eq binop(:+, constant(1), inner)
+      end
+
+      it "knows that AND has a higher precedence than OR" do
+        expr = parse_expression("A && B || C")
+        inner = binop(:"&&", variable('A'), variable('B'))
+        expect(expr).to eq binop(:"||", inner, variable('C'))
+      end
+
+      it "parses equality" do
+        expr = parse_expression("123 == 321")
+        expect(expr).to eq binop(:==, constant(123), constant(321))
+      end
+
+      it "parses inequality" do
+        expr = parse_expression("aaa != 222")
+        expect(expr).to eq binop(:!=, variable('aaa'), constant(222))
+      end
     end
   end
 
