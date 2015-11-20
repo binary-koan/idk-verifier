@@ -1,6 +1,7 @@
 
 expect a where a > 0, a < 10
 
+# we aren't very smart with for loops yet
 if a == 20 {
     a = 5
 } else {
