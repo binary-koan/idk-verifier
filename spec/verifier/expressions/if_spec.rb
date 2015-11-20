@@ -30,8 +30,7 @@ RSpec.describe Verifier::IfExpression do
         [
           assertion(bin_op(:>=, variable("x"), constant(200))),
           assignment("x", constant(2))
-        ],
-        []
+        ], []
       )
     end
 
@@ -39,12 +38,9 @@ RSpec.describe Verifier::IfExpression do
       expression.static_evaluate(context)
       expect(context["x"]).to be_a Verifier::UnionRange
 
-      puts context["x"]
-
-      first, second, third = context["x"].ranges
+      first, second = context["x"].ranges
       expect(first.to_range).to eq 2..2
-      expect(second.to_range).to eq -Float::INFINITY..0
-      expect(third.to_range).to eq 100..Float::INFINITY
+      expect(second.to_range).to eq Verifier::NEGATIVE_INFINITY..200
     end
   end
 end

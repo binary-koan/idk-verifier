@@ -56,13 +56,11 @@ module Verifier
 
       constraints = expression.variable_constraints(context)
       inverse_constraints = {}
-      constraints.each { |name, value| inverse_constraints[name] = -value }
+      constraints.each { |name, value| inverse_constraints[name] = value.inverse }
 
-      true_context = Scope.intersect_constraints(constraints, context)
-      puts "true context: #{true_context}"
+      true_context = context.merge(constraints)
       true_expressions.each { |expr| expr.static_evaluate(true_context) }
-      false_context = Scope.intersect_constraints(inverse_constraints, context)
-      puts "false context: #{false_context}"
+      false_context = context.merge(inverse_constraints)
       false_expressions.each { |expr| expr.static_evaluate(false_context) }
 
       context.merge!(Scope.unite_constraints(true_context, false_context))

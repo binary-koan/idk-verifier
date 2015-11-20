@@ -138,17 +138,15 @@ module Verifier
 
     # Arithmetic
 
-    # def !
-    #   if lower == NEGATIVE_INFINITY
-    #     ValueRange.new(lower: upper == POSITIVE_INFINITY ? NEGATIVE_INFINITY : upper)
-    #   elsif upper == POSITIVE_INFINITY
-    #     ValueRange.new(upper: lower == NEGATIVE_INFINITY ? POSITIVE_INFINITY : lower)
-    #   else
-    #     UnionRange.new(ValueRange.new(upper: lower), ValueRange.new(lower: upper))
-    #   end
-    #
-    #   true
-    # end
+    def inverse
+      if lower == NEGATIVE_INFINITY
+        ValueRange.new(lower: upper == POSITIVE_INFINITY ? NEGATIVE_INFINITY : upper)
+      elsif upper == POSITIVE_INFINITY
+        ValueRange.new(upper: lower == NEGATIVE_INFINITY ? POSITIVE_INFINITY : lower)
+      else
+        UnionRange.new(ValueRange.new(upper: lower + 1), ValueRange.new(lower: upper - 1))
+      end
+    end
 
     def -@
       # This may be wrong ...
