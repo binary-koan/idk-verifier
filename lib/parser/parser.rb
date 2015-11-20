@@ -165,11 +165,14 @@ module Verifier
       expressions = []
 
       loop do
-        expressions << parse_expression
+        expression = parse_expression
+        break if !expression
 
-        puts "peeked: #{@tokenizer.peek}"
+        expressions << expression
 
-        if @tokenizer.peek != ','
+        if @tokenizer.peek == ','
+          expect(Token.symbol(','))
+        else
           break
         end
       end
@@ -191,7 +194,9 @@ module Verifier
         expr = list.first
 
         list.each do |expression|
-          expr = BinaryOperatorExpression.new(:"&&", expr, expression)
+          if !expression.equal?(list.first)
+            expr = BinaryOperatorExpression.new(:"&&", expr, expression)
+          end
         end
       end
       expr
