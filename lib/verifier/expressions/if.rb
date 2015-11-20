@@ -8,6 +8,14 @@ module Verifier
 
     attr_reader :condition, :body
 
+    def self.if(condition, body)
+      IfBranch.new(condition, body)
+    end
+
+    def self.else(body)
+      IfBranch.new(nil, body)
+    end
+
     def initialize(condition, body)
       @condition = condition
       @body = body
