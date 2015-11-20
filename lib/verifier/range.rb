@@ -5,20 +5,33 @@ module Verifier
   class UnionRange
     attr_reader :ranges
 
-    def initialize(*ranges)
+    def initialize(*ranges, simple: false)
       @ranges = ranges.map { |range| range.is_a?(UnionRange) ? range.ranges : range }.flatten
+      @simple = simple
+    end
+
+    def simple?
+      @simple
     end
 
     def simplify
+      return self if simple?
+
       new_ranges = merge_overlapping_ranges(ranges.map(&:to_range))
-      UnionRange.new(*new_ranges.map { |ruby_range| ValueRange.new(lower: ruby_range.begin, upper: ruby_range.end) })
+      new_ranges.map! { |ruby_range| ValueRange.new(lower: ruby_range.begin, upper: ruby_range.end) }
+
+      if new_ranges.size == 1
+        new_ranges[0]
+      else
+        UnionRange.new(*new_ranges, simple: true)
+      end
     end
 
     def &(other)
       if other.is_a?(UnionRange)
         fail("Can't intersect union ranges right now ...") #TODO
       else
-        UnionRange.new(*ranges.map { |range| range & other })
+        UnionRange.new(*ranges.map { |range| range & other }, simple: @simple)
       end
     end
 
@@ -32,11 +45,9 @@ module Verifier
       end
     end
 
-    #TODO unary negation
-
     [:+, :-, :*, :/].each do |operator|
       define_method(operator) do |other|
-        UnionRange.new(*ranges.map { |range| range.send(operator, other) })
+        UnionRange.new(*ranges.map { |range| range.send(operator, other) }, simple: @simple)
       end
     end
 
@@ -115,6 +126,18 @@ module Verifier
     end
 
     # Arithmetic
+
+    # def !
+    #   if lower == NEGATIVE_INFINITY
+    #     ValueRange.new(lower: upper == POSITIVE_INFINITY ? NEGATIVE_INFINITY : upper)
+    #   elsif upper == POSITIVE_INFINITY
+    #     ValueRange.new(upper: lower == NEGATIVE_INFINITY ? POSITIVE_INFINITY : lower)
+    #   else
+    #     UnionRange.new(ValueRange.new(upper: lower), ValueRange.new(lower: upper))
+    #   end
+    #
+    #   true
+    # end
 
     def -@
       # This may be wrong ...

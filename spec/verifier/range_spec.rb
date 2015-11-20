@@ -162,4 +162,22 @@ RSpec.describe Verifier::UnionRange do
       end
     end
   end
+
+  context "with a complex union of multiple indefinite ranges" do
+    let(:range) do
+      union_range(
+        value_range(lower: 0, upper: 100), value_range(upper: -10),
+        value_range(upper: 10), value_range(lower: 50, upper: 500)
+      )
+    end
+
+    describe "#simplify" do
+      it "merges the ranges into one value range" do
+        simple = range.simplify
+        expect(simple).to be_a Verifier::ValueRange
+        expect(simple.lower).to eq Verifier::NEGATIVE_INFINITY
+        expect(simple.upper).to eq 500
+      end
+    end
+  end
 end
