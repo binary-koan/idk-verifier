@@ -1,0 +1,3 @@
+expect x where x <= 0 || x >= 100
+
+assert x != 0

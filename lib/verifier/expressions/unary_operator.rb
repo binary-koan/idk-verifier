@@ -13,12 +13,14 @@ module Verifier
       case operator
       when :-
         -@expression.static_evaluate(context)
+      when :!
+        !@expression.static_evaluate(context)
       end
     end
 
     def to_s
       # TODO: How to we handle factorial? It needs to be printed at the end.
-      "#{@operator}#{@expression}"
+      "#{@operator}(#{@expression})"
     end
 
     def ==(other)

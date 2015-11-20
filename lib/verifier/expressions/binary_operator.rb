@@ -12,7 +12,7 @@ module Verifier
       @evaluation_strategy = case operator
       when :"&&" then AndOperatorStrategy.new(self)
       when :"||" then OrOperatorStrategy.new(self)
-      when :<, :<=, :==, :>, :>= then ComparisonOperatorStrategy.new(self)
+      when :<, :<=, :==, :>, :>=, :!= then ComparisonOperatorStrategy.new(self)
       else BinaryOperatorStrategy.new(self)
       end
     end
