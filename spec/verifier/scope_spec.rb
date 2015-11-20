@@ -2,8 +2,8 @@ require "spec_helper"
 
 RSpec.describe Verifier::Scope do
   let(:statements) { [] }
-  let(:variables) { {} }
-  subject(:scope) { Verifier::Scope.new(statements, variables) }
+  let(:context) { {} }
+  subject(:scope) { Verifier::Scope.new(statements) }
 
   def mock_statement(str)
     class << str
@@ -15,14 +15,14 @@ RSpec.describe Verifier::Scope do
   end
 
   describe "#to_s" do
-    subject { scope.to_s }
+    subject { scope.to_s(context) }
 
     context "with no statements or variables" do
       it { is_expected.to eq "" }
     end
 
     context "with local variables" do
-      let(:variables) { { "x" => 0, "y" => 1 } }
+      let(:context) { { "x" => 0, "y" => 1 } }
       it { is_expected.to eq "# x is 0, y is 1\n" }
     end
 
@@ -33,7 +33,7 @@ RSpec.describe Verifier::Scope do
 
     context "with statements and local variables" do
       let(:statements) { [mock_statement("one"), mock_statement("two")] }
-      let(:variables) { { "z" => 0 } }
+      let(:context) { { "z" => 0 } }
       it { is_expected.to eq <<-END }
 # z is 0
 one

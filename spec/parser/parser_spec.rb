@@ -29,7 +29,7 @@ describe Verifier::Parser do
 
   def if_expr(cond, body)
     branches = [ Verifier::IfBranch.if(cond, body) ]
-    Verifier::IfExpression.new(branches)
+    Verifier::IfExpression.new(*branches)
   end
 
   def if_elseif_else_expr(cond1, body1,
@@ -38,13 +38,13 @@ describe Verifier::Parser do
     branches = [ Verifier::IfBranch.if(cond1, body1),
                  Verifier::IfBranch.if(cond2, body2),
                  Verifier::IfBranch.else(else_body) ]
-    Verifier::IfExpression.new(branches)
+    Verifier::IfExpression.new(*branches)
   end
 
   def if_else_expr(cond, body, else_body)
     branches = [ Verifier::IfBranch.if(cond, body),
                  Verifier::IfBranch.else(else_body) ]
-    Verifier::IfExpression.new(branches)
+    Verifier::IfExpression.new(*branches)
   end
 
   def for_expr(begin_expr, end_expr,

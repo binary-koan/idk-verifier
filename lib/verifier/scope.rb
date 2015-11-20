@@ -1,5 +1,3 @@
-require_relative "expression"
-
 module Verifier
   class Scope
     def self.intersect_constraints(first_values, second_values)
@@ -22,32 +20,42 @@ module Verifier
       end
     end
 
-    def initialize(statements, base_variables={})
+    def initialize(statements)
       @statements = statements
-      @base_variables = base_variables.dup
     end
 
-    def static_evaluate
-      scope = @base_variables.dup
-      @statements.each { |stmt| stmt.static_evaluate(scope) }
+    def static_evaluate(context={})
+      inner_context = context.dup
+      @statements.each { |stmt| stmt.static_evaluate(inner_context) }
     end
 
-    def to_s
-      scope = @base_variables.dup
+    def to_s(context={})
+      inner_context = context.dup
 
       result = @statements.map do |stmt|
-        known_info = known_variable_info(scope)
-        stmt.static_evaluate(scope)
-        "#{known_info}#{stmt}\n"
+        statement_to_string(stmt, inner_context)
       end.join
 
-      result + known_variable_info(scope)
+      result + known_variable_info(inner_context)
     end
 
     private
 
-    def known_variable_info(scope)
-      strings = scope.to_a.map { |name, value| "#{name} is #{value}" }.join(", ")
+    def statement_to_string(expression, context)
+      pre_info = known_variable_info(context)
+
+      if expression.is_a?(Scope)
+        str = expression.to_s(context)
+      else
+        expression.static_evaluate(context)
+        str = expression.to_s
+      end
+
+      "#{pre_info}#{str}\n"
+    end
+
+    def known_variable_info(context)
+      strings = context.to_a.map { |name, value| "#{name} is #{value}" }.join(", ")
       strings.gsub!(/\bInfinity\b/, "∞")
       strings.empty? ? "" : "# #{strings}\n"
     end

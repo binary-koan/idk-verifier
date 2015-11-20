@@ -144,7 +144,7 @@ module Verifier
       else_expr = maybe_parse_else
       branches << else_expr if else_expr
 
-      IfExpression.new(branches)
+      IfExpression.new(*branches)
     end
 
     def maybe_parse_elseif

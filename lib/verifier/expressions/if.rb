@@ -1,3 +1,5 @@
+require_relative "../scope"
+
 module Verifier
 
   # A single branch in an if-elsif-else block.
@@ -35,7 +37,7 @@ module Verifier
     end
   end
 
-  class IfExpression
+  class IfExpression < Scope
     include Expression
 
     attr_reader :branches
@@ -72,6 +74,30 @@ module Verifier
       else
         false
       end
+    end
+
+    def to_s(context={})
+      expression = branches.first.condition
+      true_expressions = branches[0].body
+      false_expressions = branches[1].body
+
+      constraints = expression.variable_constraints(context)
+      inverse_constraints = {}
+      constraints.each { |name, value| inverse_constraints[name] = value.inverse }
+
+      result = "if #{@branches[0].condition} {\n"
+      true_context = context.merge(constraints)
+      true_expressions.each { |expr| result += statement_to_string(expr, true_context) }
+
+      result += known_variable_info(true_context)
+      result += "}\nelse {\n"
+
+      false_context = context.merge(inverse_constraints)
+      false_expressions.each { |expr| result += statement_to_string(expr, false_context) }
+
+      context.merge!(Scope.unite_constraints(true_context, false_context))
+
+      result + known_variable_info(false_context) + "}"
     end
   end
 end
