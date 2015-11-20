@@ -2,6 +2,26 @@ require_relative "expression"
 
 module Verifier
   class Scope
+    def self.intersect_constraints(first_values, second_values)
+      first_values.merge(second_values) do |name, value1, value2|
+        if value1 && value2
+          value1 & value2
+        else
+          value1 || value2
+        end
+      end
+    end
+
+    def self.unite_constraints(first_values, second_values)
+      first_values.merge(second_values) do |name, value1, value2|
+        if value1 && value2
+          UnionRange.new(value1, value2)
+        else
+          value1 || value2
+        end
+      end
+    end
+
     def initialize(statements, base_variables={})
       @statements = statements
       @base_variables = base_variables.dup

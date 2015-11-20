@@ -81,19 +81,7 @@ module Verifier
     def variable_constraints(context)
       lhs_constraints = lhs.variable_constraints(context)
       rhs_constraints = rhs.variable_constraints(context.merge(lhs_constraints))
-      combined_constraints(lhs_constraints, rhs_constraints)
-    end
-
-    private
-
-    def combined_constraints(first_values, second_values)
-      first_values.merge(second_values) do |name, value1, value2|
-        if value1 && value2
-          value1 & value2
-        else
-          value1 || value2
-        end
-      end
+      Scope.intersect_constraints(lhs_constraints, rhs_constraints)
     end
   end
 
@@ -105,19 +93,7 @@ module Verifier
     def variable_constraints(context)
       lhs_constraints = lhs.variable_constraints(context)
       rhs_constraints = rhs.variable_constraints(context.merge(lhs_constraints))
-      combined_constraints(lhs_constraints, rhs_constraints)
-    end
-
-    private
-
-    def combined_constraints(first_values, second_values)
-      first_values.merge(second_values) do |name, value1, value2|
-        if value1 && value2
-          UnionRange.new(value1, value2)
-        else
-          value1 || value2
-        end
-      end
+      Scope.unite_constraints(lhs_constraints, rhs_constraints)
     end
   end
 

@@ -1,3 +1,6 @@
+require 'simplecov'
+SimpleCov.start
+
 require_relative "../lib/verifier/expression"
 require_relative "../lib/verifier/range"
 require_relative "../lib/verifier/scope"
@@ -26,6 +29,13 @@ RSpec.configure do
 
   def constant(value)
     Verifier::ConstantExpression.new(value)
+  end
+
+  def if_condition(expression, true_expressions, false_expressions)
+    Verifier::IfExpression.new(
+      Verifier::IfBranch.if(expression, true_expressions),
+      Verifier::IfBranch.else(false_expressions)
+    )
   end
 
   # Value builders

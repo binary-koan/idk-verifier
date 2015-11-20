@@ -31,7 +31,7 @@ module Verifier
       if other.is_a?(UnionRange)
         fail("Can't intersect union ranges right now ...") #TODO
       else
-        UnionRange.new(*ranges.map { |range| range & other }, simple: @simple)
+        UnionRange.new(*ranges.map { |range| range & other }.compact, simple: @simple)
       end
     end
 
@@ -97,6 +97,12 @@ module Verifier
     end
 
     def &(other)
+      if other.is_a?(UnionRange)
+        return other & self
+      elsif outside?(other)
+        return nil
+      end
+
       new_upper = [upper, other.upper].min
       new_lower = [lower, other.lower].max
       ValueRange.new(upper: new_upper, lower: new_lower)

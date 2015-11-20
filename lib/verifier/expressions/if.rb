@@ -21,7 +21,7 @@ module Verifier
       @body = body
     end
 
-    def is_else
+    def else?
       # Else blocks have no condition
       @condition == nil
     end
@@ -40,11 +40,32 @@ module Verifier
 
     attr_reader :branches
 
-    def initialize(branches)
+    def initialize(*branches)
       @branches = branches
 
       # TODO: Make sure there is only one else
       # (unconditional) branch.
+    end
+
+    def static_evaluate(context)
+      fail("Only if {} else {} is supported") unless @branches.size == 2 && @branches[1].else?
+
+      expression = branches.first.condition
+      true_expressions = branches[0].body
+      false_expressions = branches[1].body
+
+      constraints = expression.variable_constraints(context)
+      inverse_constraints = {}
+      constraints.each { |name, value| inverse_constraints[name] = -value }
+
+      true_context = Scope.intersect_constraints(constraints, context)
+      puts "true context: #{true_context}"
+      true_expressions.each { |expr| expr.static_evaluate(true_context) }
+      false_context = Scope.intersect_constraints(inverse_constraints, context)
+      puts "false context: #{false_context}"
+      false_expressions.each { |expr| expr.static_evaluate(false_context) }
+
+      context.merge!(Scope.unite_constraints(true_context, false_context))
     end
 
     def ==(other)

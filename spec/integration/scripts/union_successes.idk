@@ -3,3 +3,5 @@ expect y where y >= 0 && y <= 100
 
 a = x + y + 10
 b = -a
+
+assert b != -210
