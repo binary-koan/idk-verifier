@@ -1,0 +1,4 @@
+expect x where x > 200 || x < 100
+expect y where y >= 0 && y <= 100
+
+z = x + y + 10

@@ -1,13 +1,25 @@
 module Verifier
+  POSITIVE_INFINITY = Float::INFINITY
+  NEGATIVE_INFINITY = -Float::INFINITY
+
   class UnionRange
     attr_reader :ranges
 
     def initialize(*ranges)
-      @ranges = ranges
+      @ranges = ranges.map { |range| range.is_a?(UnionRange) ? range.ranges : range }.flatten
+    end
+
+    def simplify
+      new_ranges = merge_overlapping_ranges(ranges.map(&:to_range))
+      UnionRange.new(*new_ranges.map { |ruby_range| ValueRange.new(lower: ruby_range.begin, upper: ruby_range.end) })
     end
 
     def &(other)
-      # Do something ...
+      if other.is_a?(UnionRange)
+        fail("Can't intersect union ranges right now ...") #TODO
+      else
+        UnionRange.new(*ranges.map { |range| range & other })
+      end
     end
 
     def range
@@ -24,7 +36,31 @@ module Verifier
 
     [:+, :-, :*, :/].each do |operator|
       define_method(operator) do |other|
-        ranges.map { |range| range.send(operator, other) }
+        UnionRange.new(*ranges.map { |range| range.send(operator, other) })
+      end
+    end
+
+    def to_s
+      ranges.join("|")
+    end
+
+    private
+
+    def ranges_overlap?(a, b)
+      a.include?(b.begin) || b.include?(a.begin)
+    end
+
+    def merge_ranges(a, b)
+      [a.begin, b.begin].min..[a.end, b.end].max
+    end
+
+    def merge_overlapping_ranges(ranges)
+      ranges.sort_by(&:begin).inject([]) do |ranges, range|
+        if !ranges.empty? && ranges_overlap?(ranges.last, range)
+          ranges[0...-1] + [merge_ranges(ranges.last, range)]
+        else
+          ranges + [range]
+        end
       end
     end
   end
@@ -38,6 +74,10 @@ module Verifier
     def initialize(upper: Float::INFINITY, lower: -Float::INFINITY)
       @upper = upper
       @lower = lower
+    end
+
+    def simplify
+      self
     end
 
     def &(other)

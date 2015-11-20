@@ -23,7 +23,7 @@ RSpec.describe Verifier::Scope do
 
     context "with local variables" do
       let(:variables) { { "x" => 0, "y" => 1 } }
-      it { is_expected.to eq "# x is 0 && y is 1\n" }
+      it { is_expected.to eq "# x is 0, y is 1\n" }
     end
 
     context "with statements and no local variables" do

@@ -17,8 +17,8 @@ RSpec.describe Verifier::VariableExpression do
     end
 
     it "returns the value of a variable in the context" do
-      result = expression.static_evaluate({ "x" => 1 })
-      expect(result).to eq 1
+      result = expression.static_evaluate({ "x" => value_range(upper: 1, lower: 1) })
+      expect(result.to_range).to eq 1..1
     end
   end
 end

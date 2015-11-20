@@ -10,10 +10,13 @@ module Verifier
 
     def static_evaluate(context)
       if context.has_key?(@name)
-        context[@name]
+        context[@name] = context[@name].simplify
       else
         context[@name] = ValueRange.new
       end
+    rescue => e
+      p context
+      raise e
     end
 
     def to_s

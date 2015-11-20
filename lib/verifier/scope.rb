@@ -27,7 +27,8 @@ module Verifier
     private
 
     def known_variable_info(scope)
-      strings = scope.to_a.map { |name, value| "#{name} is #{value}" }.join(" && ")
+      strings = scope.to_a.map { |name, value| "#{name} is #{value}" }.join(", ")
+      strings.gsub!(/\bInfinity\b/, "∞")
       strings.empty? ? "" : "# #{strings}\n"
     end
   end
