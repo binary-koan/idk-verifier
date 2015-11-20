@@ -27,6 +27,26 @@ describe Verifier::Parser do
     Verifier::AssignmentExpression.new(name, value)
   end
 
+  def if_expr(cond, body)
+    branches = [ Verifier::IfBranch.if(cond, body) ]
+    Verifier::IfExpression.new(branches)
+  end
+
+  def if_elseif_else_expr(cond1, body1,
+                          cond2, body2,
+                          else_body)
+    branches = [ Verifier::IfBranch.if(cond1, body1),
+                 Verifier::IfBranch.if(cond2, body2),
+                 Verifier::IfBranch.else(else_body) ]
+    Verifier::IfExpression.new(branches)
+  end
+
+  def if_else_expr(cond, body, else_body)
+    branches = [ Verifier::IfBranch.if(cond, body),
+                 Verifier::IfBranch.else(else_body) ]
+    Verifier::IfExpression.new(branches)
+  end
+
   context "binary operators" do
 
     it "parses addition" do
@@ -129,5 +149,27 @@ describe Verifier::Parser do
     expr = parse_expression("assert a >= 0")
     expect(expr).to eq Verifier::AssertExpression.new(
                           binop(:>=, variable('a'), constant(0)))
+  end
+
+  context "if blocks" do
+    it "parses a plain if block" do
+      expr = parse_expression("if abc { }")
+      expect(expr).to eq if_expr(variable('abc'), [])
+    end
+
+    it "parses an if-else block" do
+      expr = parse_expression("if abc { 123 } else { 321 }")
+      expect(expr).to eq if_else_expr(
+              variable('abc'), [ constant(123) ],
+              [ constant(321) ])
+    end
+
+    it "parses an if-elseif-else block" do
+      expr = parse_expression("if a { 1 } elseif b { 2 } else { 3 }")
+      expect(expr).to eq if_elseif_else_expr(
+            variable('a'), [ constant(1) ],
+            variable('b'), [ constant(2) ],
+            [ constant(3) ])
+    end
   end
 end

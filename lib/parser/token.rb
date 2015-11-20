@@ -167,7 +167,7 @@ module Verifier
       when '&', '|'
         next_symbol_maybe_repeated(first_char)
       # Tokens with a single character
-      when '!', '^'
+      when '!', '^', '{', '}'
         Token.symbol(first_char)
       end
     end

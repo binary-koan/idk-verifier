@@ -117,11 +117,65 @@ module Verifier
       end
 
       case first_word.value
+      when 'if' then parse_if
       when 'expect' then parse_expect_expression
       when 'assert' then parse_assertion
       else
         VariableExpression.new(first_word.value)
       end
+    end
+
+    def parse_if
+      cond = parse_expression
+      block = parse_block
+
+      branches = [IfBranch.if(cond,block)]
+      loop do
+        elseif = maybe_parse_elseif
+        if elseif
+          branches << elseif
+        else
+          break
+        end
+      end
+
+      else_expr = maybe_parse_else
+      branches << else_expr if else_expr
+
+      IfExpression.new(branches)
+    end
+
+    def maybe_parse_elseif
+      if @tokenizer.peek == Token.word('elseif')
+
+        assert_token('elseif')
+        condition = parse_expression
+        block = parse_block
+        IfBranch.if(condition, block)
+      end
+    end
+
+    def maybe_parse_else
+      if @tokenizer.peek == Token.word('else')
+
+        assert_token('else')
+        block = parse_block
+        IfBranch.else(block)
+      end
+    end
+
+    def parse_block
+      expect(Token.symbol('{'))
+
+      expressions = []
+      while @tokenizer.peek != Token.symbol('}') do
+        expressions << parse_expression
+      end
+
+      # Eat end bracket
+      assert_token(Token.symbol('}'))
+
+      expressions
     end
 
     def parse_prefix_unary_expression(sym_token)
@@ -238,7 +292,7 @@ module Verifier
 
     def expect(value)
       token = @tokenizer.next
-      fail if token != value
+      fail("token was '#{token}' but should be '#{value}'") if token != value
       token
     end
 

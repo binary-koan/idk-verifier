@@ -25,6 +25,14 @@ module Verifier
       # Else blocks have no condition
       @condition == nil
     end
+
+    def ==(other)
+      if other.is_a?(IfBranch)
+        @condition == other.condition && @body == other.body
+      else
+        false
+      end
+    end
   end
 
   class IfExpression
@@ -37,6 +45,14 @@ module Verifier
 
       # TODO: Make sure there is only one else
       # (unconditional) branch.
+    end
+
+    def ==(other)
+      if other.is_a?(IfExpression)
+        @branches == other.branches
+      else
+        false
+      end
     end
   end
 end
