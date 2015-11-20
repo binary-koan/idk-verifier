@@ -104,6 +104,14 @@ describe Verifier::Parser do
                           binop(:>, variable('a'), constant(0)))
   end
 
+  it "parses an expect expression with multiple predicates" do
+    expr = parse_expression("expect a where a > 0, a < 100")
+    expect(expr).to eq Verifier::ExpectExpression.new('a',
+                          binop(:"&&",
+                              binop(:>, variable('a'), constant(0)),
+                              binop(:<, variable('a'), constant(100))))
+  end
+
   it "parses an assertion" do
     expr = parse_expression("assert a >= 0")
     expect(expr).to eq Verifier::AssertExpression.new(

@@ -133,7 +133,7 @@ module Verifier
     def parse_expect_expression
       variables = parse_word_list
       expect(Token.word('where'))
-      expr = parse_expression
+      expr = parse_predicate
       ExpectExpression.new(variables, expr)
     end
 
@@ -159,6 +159,42 @@ module Verifier
         end
       end
       words
+    end
+
+    def parse_expression_list
+      expressions = []
+
+      loop do
+        expressions << parse_expression
+
+        puts "peeked: #{@tokenizer.peek}"
+
+        if @tokenizer.peek != ','
+          break
+        end
+      end
+      expressions
+    end
+
+    def parse_predicate
+      expressions = parse_expression_list
+      merge_predicate_list_into_expression(expressions)
+    end
+
+    # Concatenates a predicate list using the 'AND' operator
+    def merge_predicate_list_into_expression(list)
+      fail if list.empty?
+
+      expr = list.first
+
+      if list.length > 1
+        expr = list.first
+
+        list.each do |expression|
+          expr = BinaryOperatorExpression.new(:"&&", expr, expression)
+        end
+      end
+      expr
     end
 
     def parse_variable
