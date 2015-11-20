@@ -20,6 +20,10 @@ module Verifier
       "assert #{@expression}"
     end
 
+    def inspect
+      "assert #{@expression.inspect}"
+    end
+
     def ==(other)
       if other.is_a?(AssertExpression)
         @expression == other.expression

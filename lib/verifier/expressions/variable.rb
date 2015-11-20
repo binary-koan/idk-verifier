@@ -20,6 +20,10 @@ module Verifier
       @name
     end
 
+    def inspect
+      @name
+    end
+
     def ==(other)
       if self.is_a?(VariableExpression) && other.is_a?(VariableExpression)
         @name == other.name

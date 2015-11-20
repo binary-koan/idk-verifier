@@ -17,6 +17,10 @@ module Verifier
       "#{@name} = #{@expression}"
     end
 
+    def inspect
+      "#{@name.inspect} = #{@expression.inspect}"
+    end
+
     def ==(other)
       if other.is_a?(AssignmentExpression)
         @name == other.name

@@ -16,6 +16,10 @@ module Verifier
       @value.to_s
     end
 
+    def inspect
+      @value.inspect
+    end
+
     def ==(other)
       if other.is_a?(Integer)
         @value == other

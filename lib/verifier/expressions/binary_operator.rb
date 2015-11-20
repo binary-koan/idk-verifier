@@ -31,6 +31,10 @@ module Verifier
       "#{@lhs} #{@operator} #{@rhs}"
     end
 
+    def inspect
+      "#{@lhs.inspect} #{@operator.inspect} #{@rhs.inspect}"
+    end
+
     def ==(other)
       if self.is_a?(BinaryOperatorExpression) && other.is_a?(BinaryOperatorExpression)
         (@operator == other.operator) &&

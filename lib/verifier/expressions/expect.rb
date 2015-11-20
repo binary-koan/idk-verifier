@@ -21,6 +21,10 @@ module Verifier
       "expect #{@names.join(', ')} where #{@expression}"
     end
 
+    def inspect
+      "expect #{@names.inspect} where #{@expression.inspect}"
+    end
+
     def ==(other)
       if other.is_a?(ExpectExpression)
         @names == other.names
