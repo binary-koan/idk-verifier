@@ -31,8 +31,8 @@ y = x * 2 + 100
 And then assertions are written to verifiy the output values.
 
 ```
-assert x >= 0, x <= 100, x > (-1), x < 101
-assert y => 100, y <= 300
+assert x >= 0 && x <= 100 && x > (-1), x < 101
+assert y => 100 &&  y <= 300
 ```
 
 Programs can be verified by running `bin/idk-verifier <program-path>`.
