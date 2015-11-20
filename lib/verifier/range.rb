@@ -45,6 +45,11 @@ module Verifier
       end
     end
 
+    def -@
+      # Quite likely wrong
+      UnionRange.new(*ranges.map { |range| -range })
+    end
+
     [:+, :-, :*, :/].each do |operator|
       define_method(operator) do |other|
         UnionRange.new(*ranges.map { |range| range.send(operator, other) }, simple: @simple)
@@ -52,7 +57,7 @@ module Verifier
     end
 
     def to_s
-      ranges.join("|")
+      ranges.sort.join("|")
     end
 
     private

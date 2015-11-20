@@ -1,6 +1,5 @@
-expect x where x > 200 || x < 100
+expect x where x > 200 || x < 100 || (x >= 50 && x <= 75)
 expect y where y >= 0 && y <= 100
 
-z = x + y + 10
-
-assert z != -10
+a = x + y + 10
+b = -a

@@ -20,7 +20,7 @@ module Verifier
 
     def to_s
       # TODO: How to we handle factorial? It needs to be printed at the end.
-      "#{@operator}(#{@expression})"
+      "#{@operator}#{@expression}"
     end
 
     def ==(other)
