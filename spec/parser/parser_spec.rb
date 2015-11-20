@@ -47,6 +47,10 @@ describe Verifier::Parser do
     Verifier::IfExpression.new(branches)
   end
 
+  def while_expr(cond, body)
+    Verifier::WhileExpression.new(cond, body)
+  end
+
   context "binary operators" do
 
     it "parses addition" do
@@ -170,6 +174,13 @@ describe Verifier::Parser do
             variable('a'), [ constant(1) ],
             variable('b'), [ constant(2) ],
             [ constant(3) ])
+    end
+  end
+
+  context "while blocks" do
+    it "parses a trivial while block" do
+      expr = parse_expression("while abc { 1 }")
+      expect(expr).to eq while_expr(variable('abc'), [ constant(1) ])
     end
   end
 end

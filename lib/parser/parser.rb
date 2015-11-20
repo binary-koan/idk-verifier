@@ -118,6 +118,7 @@ module Verifier
 
       case first_word.value
       when 'if' then parse_if
+      when 'while' then parse_while
       when 'expect' then parse_expect_expression
       when 'assert' then parse_assertion
       else
@@ -162,6 +163,13 @@ module Verifier
         block = parse_block
         IfBranch.else(block)
       end
+    end
+
+    def parse_while
+      condition = parse_expression
+      body = parse_block
+
+      WhileExpression.new(condition, body)
     end
 
     def parse_block

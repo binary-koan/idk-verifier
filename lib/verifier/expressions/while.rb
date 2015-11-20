@@ -4,7 +4,7 @@ module Verifier
 
     attr_reader :condition, :body
 
-    def new(condition, body)
+    def initialize(condition, body)
       @condition = condition
       @body = body
     end
